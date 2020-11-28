@@ -1,24 +1,36 @@
-import logo from './logo.svg';
-import './App.css';
+import "./App.css";
+import React, { useEffect, useState } from "react";
+import Layout from "./hoc/Layout/Layout";
+import { Switch, Route, Redirect } from "react-router-dom";
+import Gallery from "./containers/Gallery/Gallery";
+import LogIn from "./containers/LogIn/LogIn";
+import CreatePieceForm from "./commponents/CreatePieceForm/CreatePieceForm";
+import { useDispatch } from "react-redux";
+import { authCheckState } from "./store/actions";
+import DateFnsUtils from "@date-io/date-fns";
+import { MuiPickersUtilsProvider } from "@material-ui/pickers";
 
 function App() {
+  const dispatch = useDispatch();
+
+  useEffect(() => {
+    dispatch(authCheckState());
+  }, []);
+
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+    <MuiPickersUtilsProvider utils={DateFnsUtils}>
+      <div className="App">
+        <Layout>
+          <Switch>
+            <Route path="/admin" component={Gallery} />
+            <Route path="/create" component={CreatePieceForm}></Route>
+            <Route path="/home" component={Gallery} />
+            <Route path="/login" component={LogIn} />
+            <Redirect from="/" to="/home" />
+          </Switch>
+        </Layout>
+      </div>
+    </MuiPickersUtilsProvider>
   );
 }
 

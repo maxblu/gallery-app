@@ -57,13 +57,13 @@ const useStyles = makeStyles((theme) => ({
 const cards = [1, 2, 3, 4, 5, 6];
 
 const piece = {
-  title: null,
-  image_url: null,
-  author: null,
-  tec: null,
-  year: null,
-  manif: null,
-  price: null,
+  title: "",
+  image_url: "",
+  author: "",
+  tec: "",
+  year: "",
+  manif: "",
+  price: 0,
   awards: null,
 };
 

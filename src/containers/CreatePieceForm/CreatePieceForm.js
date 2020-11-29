@@ -53,11 +53,13 @@ const CreatePieceForm = (props) => {
 
   const [piece, setPiece] = useState({ ...props.location.state });
   // const [photo, setPhoto] = useState(noImage);
-  const [photo, setPhoto] = useState({ preview: noImage, raw: noImage });
+  const [photo, setPhoto] = useState({
+    preview: noImage,
+    raw: { name: "NoPhoto.png" },
+  });
   const [progress, setProgress] = useState(0);
 
-  const [selectedDate, handleDateChange] = useState(new Date());
-
+  console.log(piece);
   const handleUploadPhoto = (e) => {
     console.log(e.target.files);
     if (e.target.files.length) {
@@ -70,6 +72,26 @@ const CreatePieceForm = (props) => {
 
   const hanldeTitleChange = (e) => {
     setPiece({ ...piece, title: e.target.value });
+  };
+
+  const hanldeAuthorChange = (e) => {
+    setPiece({ ...piece, author: e.target.value });
+  };
+
+  const hanldeTecChange = (e) => {
+    setPiece({ ...piece, tec: e.target.value });
+  };
+
+  const hanldeManifChange = (e) => {
+    setPiece({ ...piece, manif: e.target.value });
+  };
+
+  const hanldePriceChange = (e) => {
+    setPiece({ ...piece, price: e.target.value });
+  };
+
+  const hanldeYearChange = (value) => {
+    setPiece({ ...piece, year: value });
   };
 
   const handleUploadPiece = (e) => {
@@ -147,6 +169,7 @@ const CreatePieceForm = (props) => {
                   //   helperText={emailMesg}
                   label="Autor"
                   value={piece.author}
+                  onChange={hanldeAuthorChange}
                   //   onChange={handleChangeEmail}
                   //   autoComplete="email"
                   //   autoFocus
@@ -163,6 +186,7 @@ const CreatePieceForm = (props) => {
                   //   helperText={emailMesg}
                   label="Manifestación artística"
                   value={piece.manif}
+                  onChange={hanldeManifChange}
                   //   onChange={handleChangeEmail}
                   //   autoComplete="email"
                   //   autoFocus
@@ -179,6 +203,7 @@ const CreatePieceForm = (props) => {
                   //   helperText={emailMesg}
                   label="Técnica"
                   value={piece.tec}
+                  onChange={hanldeTecChange}
                   //   onChange={handleChangeEmail}
                   //   autoComplete="email"
                   //   autoFocus
@@ -196,6 +221,7 @@ const CreatePieceForm = (props) => {
                   //   helperText={emailMesg}
                   label="Precio"
                   value={piece.price}
+                  onChange={hanldePriceChange}
                   //   onChange={handleChangeEmail}
                   //   autoComplete="email"
                   //   autoFocus
@@ -214,7 +240,7 @@ const CreatePieceForm = (props) => {
                   views={["year"]}
                   label="Año"
                   value={piece.year}
-                  onChange={handleDateChange}
+                  onChange={hanldeYearChange}
                   variant="inline"
                   fullWidth
                   animateYearScrolling

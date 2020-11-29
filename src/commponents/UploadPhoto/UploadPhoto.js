@@ -7,9 +7,9 @@ import {
   Tooltip,
   IconButton,
   makeStyles,
+  Button,
 } from "@material-ui/core";
 import CloudUploadIcon from "@material-ui/icons/CloudUpload";
-import noImage from "../../assets/images/noImage.png";
 
 const useStyles = makeStyles((theme) => ({
   card: {
@@ -22,12 +22,12 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const UploadPhotoForm = (props) => {
+const UploadPhoto = (props) => {
   const classes = useStyles();
 
   return (
     <Card className={classes.card}>
-      <CardMedia className={classes.cardMedia} image={noImage}></CardMedia>
+      <CardMedia className={classes.cardMedia} image={props.photo}></CardMedia>
 
       <CardActions>
         <Grid
@@ -38,11 +38,16 @@ const UploadPhotoForm = (props) => {
           justify="center"
         >
           <Grid item>
-            <Tooltip title="Subir Foto">
-              <IconButton>
-                <CloudUploadIcon />
-              </IconButton>
-            </Tooltip>
+            {/* <Tooltip title="Subir Foto" onClick={props.handleUpload}> */}
+            {/* <input type="file" /> */}
+            {/* <input type="file" hidden /> */}
+            {/* </CloudUploadIcon> */}
+            {/* </Tooltip> */}
+            <Button variant="contained" component="label">
+              <CloudUploadIcon />
+              Elegir Foto
+              <input type="file" hidden onChange={props.handleUpload} />
+            </Button>
           </Grid>
         </Grid>
       </CardActions>
@@ -50,4 +55,4 @@ const UploadPhotoForm = (props) => {
   );
 };
 
-export default UploadPhotoForm;
+export default UploadPhoto;

@@ -56,20 +56,42 @@ const useStyles = makeStyles((theme) => ({
 
 const cards = [1, 2, 3, 4, 5, 6];
 
+const piece = {
+  title: null,
+  image_url: null,
+  author: null,
+  tec: null,
+  year: null,
+  manif: null,
+  price: null,
+  awards: null,
+};
+
 const Gallery = (props) => {
   const classes = useStyles();
   const [isAuth, setIsAuth] = useState(false);
+  const [selectedPiece, setSelectedPiece] = useState({
+    title: null,
+    price: null,
+  });
   //   const [isAdminPage, setisAdminPage] = useState();
   const auth = useSelector((state) => state.token, shallowEqual);
   const dispatch = useDispatch();
   const history = useHistory();
 
+  console.log(selectedPiece);
   useEffect(() => {
     auth ? setIsAuth(true) : setIsAuth(false);
   }, [auth]);
 
   const handleCreate = () => {
-    history.push("/create");
+    history.push("/create", piece);
+  };
+
+  const handleEdit = (event, id) => {
+    console.log(id);
+    setSelectedPiece({ ...selectedPiece, title: "45adfgggggggg" });
+    history.push("/edit", piece);
   };
 
   return (
@@ -132,11 +154,6 @@ const Gallery = (props) => {
                   <Typography gutterBottom variant="h5" component="h2">
                     Titulo
                   </Typography>
-                  {/* <Typography>Artista:</Typography>
-                  <Typography>Año:</Typography>
-                  <Typography>Manifestación Artística:</Typography>
-                  <Typography>Técnica:</Typography>
-                  <Typography>Premios:</Typography> */}
                 </CardContent>
                 <CardActions>
                   <Grid
@@ -161,23 +178,23 @@ const Gallery = (props) => {
                       >
                         <Grid item xs={4} sm={4} md={4} xl={4}>
                           <Tooltip title="Retirar de la Expocición">
-                            <IconButton aria-label="retirar">
-                              <VisibilityOffIcon />
-                            </IconButton>
+                            <VisibilityOffIcon />
                           </Tooltip>
                         </Grid>
                         <Grid item xs={4} sm={4} md={4} xl={4}>
-                          <Tooltip title="Editar">
-                            <IconButton aria-label="delete">
-                              <EditIcon />
-                            </IconButton>
+                          <Tooltip
+                            title="Editar"
+                            id="edit"
+                            onClick={(event) => handleEdit(event, card)}
+                          >
+                            {/* <IconButton aria-label="edit" > */}
+                            <EditIcon />
+                            {/* </IconButton> */}
                           </Tooltip>
                         </Grid>
                         <Grid item xs={4} sm={4} md={4} xl={4}>
                           <Tooltip title="Eliminar">
-                            <IconButton aria-label="delete">
-                              <DeleteIcon />
-                            </IconButton>
+                            <DeleteIcon />
                           </Tooltip>
                         </Grid>
                       </Grid>

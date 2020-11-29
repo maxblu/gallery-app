@@ -4,7 +4,7 @@ import Layout from "./hoc/Layout/Layout";
 import { Switch, Route, Redirect } from "react-router-dom";
 import Gallery from "./containers/Gallery/Gallery";
 import LogIn from "./containers/LogIn/LogIn";
-import CreatePieceForm from "./commponents/CreatePieceForm/CreatePieceForm";
+import CreatePieceForm from "./containers/CreatePieceForm/CreatePieceForm";
 import { useDispatch } from "react-redux";
 import { authCheckState } from "./store/actions";
 import DateFnsUtils from "@date-io/date-fns";
@@ -24,6 +24,7 @@ function App() {
           <Switch>
             <Route path="/admin" component={Gallery} />
             <Route path="/create" component={CreatePieceForm}></Route>
+            <Route path="/edit" component={CreatePieceForm}></Route>
             <Route path="/home" component={Gallery} />
             <Route path="/login" component={LogIn} />
             <Redirect from="/" to="/home" />

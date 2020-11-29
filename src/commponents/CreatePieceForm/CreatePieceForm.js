@@ -3,8 +3,20 @@ import { makeStyles } from "@material-ui/core/styles";
 import CssBaseline from "@material-ui/core/CssBaseline";
 import Paper from "@material-ui/core/Paper";
 import Typography from "@material-ui/core/Typography";
-import { Container, Grid, TextField } from "@material-ui/core";
-import { DatePicker, InlineDatePicker } from "@material-ui/pickers";
+
+import {
+  Container,
+  Grid,
+  TextField,
+  Card,
+  CardMedia,
+  CardActions,
+  Tooltip,
+  IconButton,
+  CardContent,
+} from "@material-ui/core";
+import { DatePicker } from "@material-ui/pickers";
+import UploadPhotoForm from "../UploadPhotoForm/UploadPhotoForm";
 
 const useStyles = makeStyles((theme) => ({
   paper: {
@@ -22,6 +34,14 @@ const useStyles = makeStyles((theme) => ({
     display: "flex",
     justifyContent: "flex-end",
   },
+  card: {
+    height: "50%",
+    display: "flex",
+    flexDirection: "column",
+  },
+  cardMedia: {
+    paddingTop: "56.25%", // 16:9
+  },
   button: {
     marginTop: theme.spacing(3),
     marginLeft: theme.spacing(1),
@@ -31,16 +51,28 @@ const useStyles = makeStyles((theme) => ({
 const CreatePieceForm = (props) => {
   const classes = useStyles();
   const [selectedDate, handleDateChange] = useState(new Date());
+  //   const
+  //   const inputsElements = ["text", "text", "text", "text", "number", "year"];
+  //   const inputs = inputsElements.map((elementType) =>{
+  //       switch () {
+  //           case value:
+
+  //               break;
+
+  //           default:
+  //               break;
+  //       }
+  //   });
 
   return (
     <React.Fragment>
       <CssBaseline />
-      <Container maxWidth="md">
+      <Container maxWidth="sm">
         <Paper className={classes.paper}>
           <Typography component="h1" variant="h4" align="center">
             Añadir Obra
           </Typography>
-
+          <UploadPhotoForm />
           <Grid container>
             <Grid item xs={12} sm={12} md={12} lg={12} xl={12}>
               <TextField

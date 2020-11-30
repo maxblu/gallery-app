@@ -84,13 +84,6 @@ export const auth = (email, password, method) => {
   };
 };
 
-// export const setAuthRedirectPath = () => {
-//   return {
-//     type: SET_AUTH_REDIRECT_PATH,
-//     // path: path,
-//   };
-// };
-
 export const authCheckState = () => {
   return (dispatch) => {
     const token = localStorage.getItem("token");

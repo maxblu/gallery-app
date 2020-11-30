@@ -58,10 +58,11 @@ const cards = [1, 2, 3, 4, 5, 6];
 
 const piece = {
   title: "",
-  image_url: "",
+  image_url: null,
+
   author: "",
   tec: "",
-  year: "",
+  year: new Date(),
   manif: "",
   price: 0,
   awards: null,
@@ -90,7 +91,7 @@ const Gallery = (props) => {
 
   const handleEdit = (event, id) => {
     console.log(id);
-    setSelectedPiece({ ...selectedPiece, title: "45adfgggggggg" });
+
     history.push("/edit", piece);
   };
 

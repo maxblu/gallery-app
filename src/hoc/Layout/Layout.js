@@ -55,6 +55,55 @@ const Layout = (props) => {
     history.replace("/home");
   };
 
+  let drawer_items = (
+    <Grid container justify="center" alignContent="center" alignItems="center">
+      <Grid item xs={12}>
+        <NavigationItem
+          sideDrawerHandler={sideDrawerClosedHandler}
+          link="/home"
+        >
+          Galería
+        </NavigationItem>
+      </Grid>
+      <Grid item xs={12}>
+        <NavigationItem
+          sideDrawerHandler={sideDrawerClosedHandler}
+          link="/login"
+        >
+          Entrar
+        </NavigationItem>
+      </Grid>
+    </Grid>
+  );
+
+  if (isAuth) {
+    drawer_items = (
+      <Grid
+        container
+        justify="center"
+        alignContent="center"
+        alignItems="center"
+      >
+        <Grid item xs={12}>
+          <NavigationItem
+            sideDrawerHandler={sideDrawerClosedHandler}
+            link="/admin"
+          >
+            Administracion
+          </NavigationItem>
+        </Grid>
+        <Grid item xs={12}>
+          <NavigationItem
+            sideDrawerHandler={sideDrawerClosedHandler}
+            link="/login"
+          >
+            Salir
+          </NavigationItem>
+        </Grid>
+      </Grid>
+    );
+  }
+
   return (
     <Grid container justify="center" alignContent="center">
       <Grid
@@ -76,41 +125,7 @@ const Layout = (props) => {
       </Grid>
       <Grid item>
         <Drawer open={showSideDrower} onClose={sideDrawerClosedHandler}>
-          <Grid
-            container
-            justify="center"
-            alignContent="center"
-            alignItems="center"
-          >
-            <Grid item xs={12}>
-              <NavigationItem
-                sideDrawerHandler={sideDrawerClosedHandler}
-                link="/home"
-              >
-                Galería
-              </NavigationItem>
-            </Grid>
-            <Grid item xs={12}>
-              <Divider variant="middle" />
-            </Grid>
-            <Grid item xs={12}>
-              {isAuth ? (
-                <NavigationItem
-                  sideDrawerHandler={sideDrawerClosedHandler}
-                  link="/admin"
-                >
-                  Administracion
-                </NavigationItem>
-              ) : (
-                <NavigationItem
-                  sideDrawerHandler={sideDrawerClosedHandler}
-                  link="/login"
-                >
-                  Entrar
-                </NavigationItem>
-              )}
-            </Grid>
-          </Grid>
+          {drawer_items}
         </Drawer>
       </Grid>
       <Grid item xs={12} sm={12} md={12} lg={12} xl={12}>

@@ -40,13 +40,16 @@ const useStyles = makeStyles((theme) => ({
 const CreatePieceForm = (props) => {
   const classes = useStyles();
 
-  const [piece, setPiece] = useState(props.location.state);
+  const [piece, setPiece] = useState(props.location.state.piece);
+  const [isEdit, setIsEdit] = useState(props.location.state.isEdit);
   const token = useSelector((state) => state.token, shallowEqual);
   // const [photo, setPhoto] = useState(noImage);
   const [photo, setPhoto] = useState({
     preview: noImage,
     raw: { name: "noImage.png" },
   });
+
+  const [changedPhoto, setchangedPhoto] = useState(false);
   const [loading, setLoading] = useState(false);
   const [progress, setProgress] = useState(0);
 
@@ -69,6 +72,7 @@ const CreatePieceForm = (props) => {
         preview: URL.createObjectURL(e.target.files[0]),
         raw: e.target.files[0],
       });
+      setchangedPhoto(true);
     }
   };
 
@@ -84,6 +88,24 @@ const CreatePieceForm = (props) => {
   //   }
   // };
 
+  const saveToDatabase = (fireBaseUrl) => {
+    if (!isEdit) {
+      axios
+        .post("/pieces.json?auth=" + token, {
+          ...piece,
+          image_url: fireBaseUrl,
+        })
+        .then((resp) => {});
+    } else {
+      axios
+        .put("/pieces/" + piece.id + ".json?auth=" + token, {
+          ...piece,
+          image_url: fireBaseUrl,
+        })
+        .then((resp) => {});
+    }
+  };
+
   const hanldeYearChange = (value) => {
     setPiece({ ...piece, year: value });
   };
@@ -91,53 +113,55 @@ const CreatePieceForm = (props) => {
   const handleUploadPiece = (e) => {
     e.preventDefault();
     setLoading(true);
-    if (piece.image_url) {
+    if (piece.image_url && changedPhoto) {
       const deleteRef = storage.refFromURL(piece.image_url);
 
       deleteRef
         .delete()
-        .then((resp) => {
-          console.log("deleted old one");
-        })
+        .then((resp) => {})
         .catch(e);
     }
 
-    const uploadTask = storage.ref(`/images/${photo.raw.name}`).put(photo.raw);
+    if (changedPhoto) {
+      console.log("va a cambiar foto");
+      const uploadTask = storage
+        .ref(`/images/${photo.raw.name}`)
+        .put(photo.raw);
 
-    uploadTask.on(
-      "state_changed",
-      (snapShot) => {
-        //takes a snap shot of the process as it is happening
-        // const currentProgress = Math.round(
-        //   (snapShot.bytesTransferred / snapShot.totalBytes) * 100
-        // );
-        // setProgress(currentProgress);
-      },
-      (err) => {
-        //catches the errors
-        console.log(err);
-      },
-      () => {
-        // gets the functions from storage refences the image storage in firebase by the children
-        // gets the download url then sets the image from firebase as the value for the imgUrl key:
-        storage
-          .ref("images")
-          .child(photo.raw.name)
-          .getDownloadURL()
-          .then((fireBaseUrl) => {
-            // setPhoto((prevObject) => ({ ...prevObject, preview: fireBaseUrl }));
-            axios
-              .post("/pieces.json?auth=" + token, {
-                ...piece,
-                image_url: fireBaseUrl,
-              })
-              .then((resp) => {
-                setLoading(false);
-                props.history.push("/admin");
-              });
-          });
-      }
-    );
+      uploadTask.on(
+        "state_changed",
+        (snapShot) => {
+          //takes a snap shot of the process as it is happening
+          // const currentProgress = Math.round(
+          //   (snapShot.bytesTransferred / snapShot.totalBytes) * 100
+          // );
+          // setProgress(currentProgress);
+        },
+        (err) => {
+          //catches the errors
+          console.log(err);
+        },
+        () => {
+          // gets the functions from storage refences the image storage in firebase by the children
+          // gets the download url then sets the image from firebase as the value for the imgUrl key:
+          storage
+            .ref("images")
+            .child(photo.raw.name)
+            .getDownloadURL()
+            .then((fireBaseUrl) => {
+              saveToDatabase(fireBaseUrl);
+              setLoading(false);
+
+              props.history.goBack("/admin");
+            });
+        }
+      );
+    } else {
+      saveToDatabase(piece.image_url);
+      setLoading(false);
+
+      props.history.goBack("/admin");
+    }
   };
 
   return (
@@ -159,13 +183,12 @@ const CreatePieceForm = (props) => {
                     margin="normal"
                     fullWidth
                     id="title"
+                    value={piece ? piece.title : ""}
+                    // focused={piece.title}
                     //   error={error
                     //   helperText={emailMesg}
                     label="Título"
-                    // value={piece.title}
                     onChange={handleChange}
-                    //   autoComplete="email"
-                    //   autoFocus
                   />
                 </Grid>
                 <Grid item xs={12} sm={12} md={12} lg={12} xl={12}>
@@ -175,14 +198,11 @@ const CreatePieceForm = (props) => {
                     margin="normal"
                     fullWidth
                     id="author"
+                    value={piece ? piece.author : ""}
                     //   error={error
                     //   helperText={emailMesg}
                     label="Autor"
-                    // value={piece.author}
                     onChange={handleChange}
-                    //   onChange={handleChangeEmail}
-                    //   autoComplete="email"
-                    //   autoFocus
                   />
                 </Grid>
                 <Grid item xs={12} sm={12} md={12} lg={12} xl={12}>
@@ -192,10 +212,11 @@ const CreatePieceForm = (props) => {
                     margin="normal"
                     fullWidth
                     id="manif"
+                    value={piece ? piece.manif : ""}
                     //   error={error
                     //   helperText={emailMesg}
                     label="Manifestación artística"
-                    // value={piece.manif}
+                    // value={piece?piece.manif}
                     onChange={handleChange}
                     //   onChange={handleChangeEmail}
                     //   autoComplete="email"
@@ -209,14 +230,11 @@ const CreatePieceForm = (props) => {
                     margin="normal"
                     fullWidth
                     id="tec"
+                    value={piece ? piece.tec : ""}
                     //   error={error
                     //   helperText={emailMesg}
                     label="Técnica"
-                    // value={piece.tec}
                     onChange={handleChange}
-                    //   onChange={handleChangeEmail}
-                    //   autoComplete="email"
-                    //   autoFocus
                   />
                 </Grid>
                 <Grid item xs={12} sm={12} md={12} lg={12} xl={12}>
@@ -226,15 +244,12 @@ const CreatePieceForm = (props) => {
                     margin="normal"
                     fullWidth
                     id="awards"
+                    value={piece ? piece.awards : ""}
                     //   error={error
                     //   helperText={emailMesg}
                     label="Premios"
-                    // value={piece.tec}
                     onChange={handleChange}
                     placeholder="Introdusca los premios separados por comas"
-                    //   onChange={handleChangeEmail}
-                    //   autoComplete="email"
-                    //   autoFocus
                   />
                 </Grid>
 
@@ -245,14 +260,11 @@ const CreatePieceForm = (props) => {
                     margin="normal"
                     fullWidth
                     id="price"
+                    value={piece ? piece.price : 0}
                     //   error={error
                     //   helperText={emailMesg}
                     label="Precio"
-                    // value={props.piece ? piece.price : ""}
                     onChange={handleChange}
-                    //   onChange={handleChangeEmail}
-                    //   autoComplete="email"
-                    //   autoFocus
                   />
                 </Grid>
                 <Grid
@@ -267,7 +279,7 @@ const CreatePieceForm = (props) => {
                   <DatePicker
                     views={["year"]}
                     label="Año"
-                    value={piece.year}
+                    value={piece ? piece.year : new Date()}
                     onChange={hanldeYearChange}
                     variant="inline"
                     fullWidth

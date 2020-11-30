@@ -19,6 +19,7 @@ import IconButton from "@material-ui/core/IconButton";
 import EditIcon from "@material-ui/icons/Edit";
 import VisibilityOffIcon from "@material-ui/icons/VisibilityOff";
 import VisibilityIcon from "@material-ui/icons/Visibility";
+import axios from "../../axios-orders";
 
 import { shallowEqual, useDispatch, useSelector } from "react-redux";
 
@@ -66,35 +67,52 @@ const piece = {
   manif: "",
   price: 0,
   awards: null,
+  visible: true,
 };
 
 const Gallery = (props) => {
   const classes = useStyles();
-  const [isAuth, setIsAuth] = useState(false);
-  const [selectedPiece, setSelectedPiece] = useState({
-    title: null,
-    price: null,
-  });
-  //   const [isAdminPage, setisAdminPage] = useState();
-  const auth = useSelector((state) => state.token, shallowEqual);
-  const dispatch = useDispatch();
-  const history = useHistory();
+  // const [isAuth, setIsAuth] = useState(false);
 
-  console.log(selectedPiece);
+  //   const [isAdminPage, setisAdminPage] = useState();
+  const [pieces, setPieces] = useState([]);
+  const isAuth = useSelector((state) => state.token, shallowEqual);
+  const dispatch = useDispatch();
+
+  console.log(props.history);
+
+  // useEffect(() => {
+  //   auth ? setIsAuth(true) : setIsAuth(false);
+  // }, [auth]);
+
   useEffect(() => {
-    auth ? setIsAuth(true) : setIsAuth(false);
-  }, [auth]);
+    axios
+      .get("/pieces.json")
+      .then((resp) => {
+        console.log(resp.data);
+        const fetchedPieces = [];
+        for (let key in resp.data) {
+          fetchedPieces.push({ ...resp.data[key], id: key });
+        }
+
+        setPieces(fetchedPieces);
+      })
+      .catch((err) => {});
+  }, []);
 
   const handleCreate = () => {
-    history.push("/create", piece);
+    props.history.push("/create", { piece: piece, isEdit: false });
   };
 
-  const handleEdit = (event, id) => {
-    console.log(id);
+  const handleEdit = (event, index) => {
+    console.log(index);
 
-    history.push("/edit", piece);
+    props.history.push("/edit", { piece: pieces[index], isEdit: true });
   };
 
+  const handleDelete = (event, index) => {};
+
+  console.log(pieces);
   return (
     <React.Fragment>
       <CssBaseline />
@@ -143,17 +161,17 @@ const Gallery = (props) => {
       <Container className={classes.cardGrid} maxWidth="md">
         {/* End hero unit */}
         <Grid container spacing={8}>
-          {cards.map((card) => (
-            <Grid item key={card} xs={12} sm={6} md={4}>
+          {pieces.map((piece, index) => (
+            <Grid item key={piece.image_url} xs={12} sm={6} md={4}>
               <Card className={classes.card}>
                 <CardMedia
                   className={classes.cardMedia}
-                  image="https://source.unsplash.com/random"
+                  image={piece.image_url}
                   title="Image title"
                 />
                 <CardContent className={classes.cardContent}>
                   <Typography gutterBottom variant="h5" component="h2">
-                    Titulo
+                    {piece.title}
                   </Typography>
                 </CardContent>
                 <CardActions>
@@ -178,15 +196,21 @@ const Gallery = (props) => {
                         justify="center"
                       >
                         <Grid item xs={4} sm={4} md={4} xl={4}>
-                          <Tooltip title="Retirar de la Expocición">
-                            <VisibilityOffIcon />
-                          </Tooltip>
+                          {piece.visible ? (
+                            <Tooltip title="Visible">
+                              <VisibilityIcon />
+                            </Tooltip>
+                          ) : (
+                            <Tooltip title="Oculta">
+                              <VisibilityOffIcon />
+                            </Tooltip>
+                          )}
                         </Grid>
                         <Grid item xs={4} sm={4} md={4} xl={4}>
                           <Tooltip
                             title="Editar"
                             id="edit"
-                            onClick={(event) => handleEdit(event, card)}
+                            onClick={(event) => handleEdit(event, index)}
                           >
                             {/* <IconButton aria-label="edit" > */}
                             <EditIcon />

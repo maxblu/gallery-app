@@ -11,8 +11,9 @@ import UploadPhoto from "../../commponents/UploadPhoto/UploadPhoto";
 import noImage from "../../assets/images/noImage.png";
 
 import Spinner from "../../commponents/Spinner/Spinner";
-import { Flag } from "@material-ui/icons";
-import { shallowEqual, useSelector } from "react-redux";
+import * as actions from "../../store/actions";
+
+import { shallowEqual, useDispatch, useSelector } from "react-redux";
 
 const useStyles = makeStyles((theme) => ({
   paper: {
@@ -40,23 +41,21 @@ const useStyles = makeStyles((theme) => ({
 const CreatePieceForm = (props) => {
   const classes = useStyles();
 
-  const [piece, setPiece] = useState(props.location.state.piece);
-  const [isEdit, setIsEdit] = useState(props.location.state.isEdit);
+  const [piece, setPiece] = useState({ ...props.location.state.piece });
   const token = useSelector((state) => state.token, shallowEqual);
-  // const [photo, setPhoto] = useState(noImage);
   const [photo, setPhoto] = useState({
     preview: noImage,
     raw: { name: "noImage.png" },
+    changedPhoto: false,
   });
+  const dispatch = useDispatch();
 
-  const [changedPhoto, setchangedPhoto] = useState(false);
-  const [loading, setLoading] = useState(false);
-  const [progress, setProgress] = useState(0);
+  // const [changedPhoto, setchangedPhoto] = useState(false);
+  const loading = useSelector((state) => state.loading);
 
   console.log(piece);
   // useEffect(() => {
-  //   console.log("is runnig");
-  //   setPiece({ ...props.location.state });
+  //   setPiece({ ...props.location.state.piece });
   // }, []);
 
   useEffect(() => {
@@ -71,38 +70,15 @@ const CreatePieceForm = (props) => {
       setPhoto({
         preview: URL.createObjectURL(e.target.files[0]),
         raw: e.target.files[0],
+        changedPhoto: true,
       });
-      setchangedPhoto(true);
     }
   };
 
   const handleChange = (e) => {
     const { id, value } = e.target;
-    console.log([id, value]);
-    setPiece({ ...piece, [id]: value });
-  };
-
-  // const hanldePriceChange = (e) => {
-  //   if (e.target.value >= 0) {
-  //     setPiece({ ...piece, price: e.target.value });
-  //   }
-  // };
-
-  const saveToDatabase = (fireBaseUrl) => {
-    if (!isEdit) {
-      axios
-        .post("/pieces.json?auth=" + token, {
-          ...piece,
-          image_url: fireBaseUrl,
-        })
-        .then((resp) => {});
-    } else {
-      axios
-        .put("/pieces/" + piece.id + ".json?auth=" + token, {
-          ...piece,
-          image_url: fireBaseUrl,
-        })
-        .then((resp) => {});
+    if (id !== "price" || (id === "price" && value >= 0)) {
+      setPiece({ ...piece, [id]: value });
     }
   };
 
@@ -112,56 +88,27 @@ const CreatePieceForm = (props) => {
 
   const handleUploadPiece = (e) => {
     e.preventDefault();
-    setLoading(true);
-    if (piece.image_url && changedPhoto) {
-      const deleteRef = storage.refFromURL(piece.image_url);
 
-      deleteRef
-        .delete()
-        .then((resp) => {})
-        .catch(e);
-    }
-
-    if (changedPhoto) {
-      console.log("va a cambiar foto");
-      const uploadTask = storage
-        .ref(`/images/${photo.raw.name}`)
-        .put(photo.raw);
-
-      uploadTask.on(
-        "state_changed",
-        (snapShot) => {
-          //takes a snap shot of the process as it is happening
-          // const currentProgress = Math.round(
-          //   (snapShot.bytesTransferred / snapShot.totalBytes) * 100
-          // );
-          // setProgress(currentProgress);
-        },
-        (err) => {
-          //catches the errors
-          console.log(err);
-        },
-        () => {
-          // gets the functions from storage refences the image storage in firebase by the children
-          // gets the download url then sets the image from firebase as the value for the imgUrl key:
-          storage
-            .ref("images")
-            .child(photo.raw.name)
-            .getDownloadURL()
-            .then((fireBaseUrl) => {
-              saveToDatabase(fireBaseUrl);
-              setLoading(false);
-
-              props.history.goBack("/admin");
-            });
-        }
-      );
-    } else {
-      saveToDatabase(piece.image_url);
-      setLoading(false);
-
-      props.history.goBack("/admin");
-    }
+    props.location.action === "DEL"
+      ? dispatch(
+          actions.handleDatabaseAction(
+            piece,
+            piece.image_url,
+            "DEL",
+            props.location.index,
+            token
+          )
+        )
+      : dispatch(
+          actions.crudManager(
+            piece,
+            photo,
+            props.location.state.action,
+            props.location.state.index,
+            token
+          )
+        );
+    props.history.replace("/admin");
   };
 
   return (

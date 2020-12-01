@@ -1,7 +1,7 @@
 import * as actionTypes from "./actions";
 
 export const reduxState = {
-  obras: null,
+  pieces: [],
   token: null,
   userId: null,
   error: null,
@@ -38,6 +38,41 @@ const reducer = (state = reduxState, action) => {
         token: null,
         userId: null,
       };
+    }
+    case actionTypes.START_CRUD: {
+      return { ...state, loading: true };
+    }
+    case actionTypes.LIS_FAIL: {
+      return { ...state, error: action.error, loading: false };
+    }
+    case actionTypes.LIS: {
+      return { ...state, pieces: action.pieces, loading: false };
+    }
+    case actionTypes.UPD: {
+      const pieces = [...state.pieces];
+      pieces[action.index] = action.piece;
+
+      return {
+        ...state,
+        pieces,
+        loading: false,
+      };
+    }
+    case actionTypes.ADD: {
+      const pieces = [...state.pieces];
+      pieces.push(action.piece);
+
+      return {
+        ...state,
+        pieces,
+        loading: false,
+      };
+    }
+    case actionTypes.DEL: {
+      const pieces = [...state.pieces];
+      pieces.splice(action.index, action.index + 1);
+
+      return { ...state, pieces, loading: false };
     }
 
     default:

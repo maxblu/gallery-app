@@ -1,9 +1,12 @@
 import axios from "../axios-orders";
+import { storage } from "../firebase/firebase";
 
 export const ADD = "CRE";
 export const DEL = "DEL";
 export const UPD = "UPD";
 export const LIS = "LIS";
+export const LIS_FAIL = "LIST_FAIL";
+export const START_CRUD = "START_CRUD";
 
 export const AUTH_START = "AUTH_START";
 export const AUTH_SUCCESS = "AUTH_SUCCESS";
@@ -103,6 +106,201 @@ export const authCheckState = () => {
       } else {
         dispatch(logout());
       }
+    }
+  };
+};
+
+export const startCRUD = () => {
+  return {
+    type: START_CRUD,
+  };
+};
+
+export const getPiecesSucces = (pieces) => {
+  return {
+    type: LIS,
+    pieces: pieces,
+  };
+};
+
+export const getPiecesFail = (error) => {
+  return {
+    type: LIS_FAIL,
+    error: error,
+  };
+};
+
+export const getPieces = () => {
+  return (dispatch) => {
+    axios
+      .get("/pieces.json")
+      .then((resp) => {
+        const fetchedPieces = [];
+        for (let key in resp.data) {
+          fetchedPieces.push({ ...resp.data[key], id: key });
+        }
+        dispatch(getPiecesSucces(fetchedPieces));
+      })
+      .catch((err) => {
+        dispatch(getPiecesFail(err.response.data.error));
+      });
+  };
+};
+
+export const deleteOldOne = (imageRef) => {
+  return (dispatch) => {
+    const deleteRef = storage.refFromURL(imageRef);
+
+    deleteRef
+      .delete()
+      .then((resp) => {})
+      .catch((err) => {});
+  };
+};
+
+export const update = (piece, index) => {
+  return {
+    type: UPD,
+    piece: piece,
+    index: index,
+  };
+};
+
+export const updatePiece = (piece, index, token) => {
+  return (dispatch) => {
+    axios
+      .put("/pieces/" + piece.id + ".json?auth=" + token, piece)
+      .then((resp) => {
+        dispatch(update(piece, index));
+      })
+      .catch((erro) => {
+        console.log(erro);
+      });
+  };
+};
+
+export const create = (piece) => {
+  return {
+    type: ADD,
+    piece: piece,
+  };
+};
+
+export const createPiece = (piece, token) => {
+  return (dispatch) => {
+    axios
+      .post("/pieces.json?auth=" + token, piece)
+      .then((resp) => {
+        dispatch(create(piece));
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  };
+};
+
+export const delet = (index) => {
+  return {
+    type: DEL,
+    index: index,
+  };
+};
+
+export const deletePiece = (piece, index, token) => {
+  return (dispatch) => {
+    if (piece.image_url) {
+      dispatch(deleteOldOne(piece.image_url));
+    }
+    axios
+      .delete("/pieces/" + piece.id + ".json?auth=" + token)
+      .then((resp) => {
+        console.log("hice delete", resp);
+        dispatch(delet(index));
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  };
+};
+
+export const handleDatabaseAction = (
+  piece,
+  fireBaseUrl,
+  action,
+  index,
+  token
+) => {
+  return (dispatch) => {
+    const data = { ...piece, image_url: fireBaseUrl };
+
+    switch (action) {
+      case "CRE": {
+        dispatch(createPiece(data, token));
+        break;
+      }
+      case "UPD": {
+        dispatch(updatePiece(data, index, token));
+        break;
+      }
+      case "DEL": {
+        dispatch(deletePiece(piece, index, token));
+        break;
+      }
+
+      default:
+        break;
+    }
+  };
+
+  // if (!isEdit) {
+  //   axios.post("/pieces.json?auth=" + token, data).then((resp) => {});
+  // } else {
+  // }
+};
+export const crudManager = (piece, photo, action, index, token) => {
+  return (dispatch) => {
+    dispatch(startCRUD);
+
+    if (piece.image_url && photo.changedPhoto) {
+      dispatch(deleteOldOne(piece.image_url));
+    }
+
+    if (photo.changedPhoto) {
+      const uploadTask = storage
+        .ref(`/images/${photo.raw.name}`)
+        .put(photo.raw);
+
+      uploadTask.on(
+        "state_changed",
+        (snapShot) => {
+          //takes a snap shot of the process as it is happening
+          // const currentProgress = Math.round(
+          //   (snapShot.bytesTransferred / snapShot.totalBytes) * 100
+          // );
+          // setProgress(currentProgress);
+        },
+        (err) => {
+          //catches the errors
+          console.log(err);
+        },
+        () => {
+          // gets the functions from storage refences the image storage in firebase by the children
+          // gets the download url then sets the image from firebase as the value for the imgUrl key:
+          storage
+            .ref("images")
+            .child(photo.raw.name)
+            .getDownloadURL()
+            .then((fireBaseUrl) => {
+              dispatch(
+                handleDatabaseAction(piece, fireBaseUrl, action, index, token)
+              );
+            });
+        }
+      );
+    } else {
+      dispatch(
+        handleDatabaseAction(piece, piece.image_url, action, index, token)
+      );
     }
   };
 };

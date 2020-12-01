@@ -19,7 +19,9 @@ import IconButton from "@material-ui/core/IconButton";
 import EditIcon from "@material-ui/icons/Edit";
 import VisibilityOffIcon from "@material-ui/icons/VisibilityOff";
 import VisibilityIcon from "@material-ui/icons/Visibility";
-import axios from "../../axios-orders";
+import noImage from "../../assets/images/noImage.png";
+import * as actions from "../../store/actions";
+// import axios from "../../axios-orders";
 
 import { shallowEqual, useDispatch, useSelector } from "react-redux";
 
@@ -66,7 +68,7 @@ const piece = {
   year: new Date(),
   manif: "",
   price: 0,
-  awards: null,
+  awards: "",
   visible: true,
 };
 
@@ -75,42 +77,40 @@ const Gallery = (props) => {
   // const [isAuth, setIsAuth] = useState(false);
 
   //   const [isAdminPage, setisAdminPage] = useState();
-  const [pieces, setPieces] = useState([]);
+  const pieces = useSelector((state) => state.pieces, shallowEqual);
   const isAuth = useSelector((state) => state.token, shallowEqual);
+
   const dispatch = useDispatch();
 
-  console.log(props.history);
+  // useEffect(() => {
+  //   dispatch(actions.getPieces());
+  // }, []);
 
   // useEffect(() => {
   //   auth ? setIsAuth(true) : setIsAuth(false);
   // }, [auth]);
 
-  useEffect(() => {
-    axios
-      .get("/pieces.json")
-      .then((resp) => {
-        console.log(resp.data);
-        const fetchedPieces = [];
-        for (let key in resp.data) {
-          fetchedPieces.push({ ...resp.data[key], id: key });
-        }
-
-        setPieces(fetchedPieces);
-      })
-      .catch((err) => {});
-  }, []);
-
   const handleCreate = () => {
-    props.history.push("/create", { piece: piece, isEdit: false });
+    props.history.push("/create", { piece: piece, action: "CRE" });
   };
 
   const handleEdit = (event, index) => {
     console.log(index);
 
-    props.history.push("/edit", { piece: pieces[index], isEdit: true });
+    props.history.push("/edit", {
+      piece: pieces[index],
+      index: index,
+      action: "UPD",
+    });
   };
 
-  const handleDelete = (event, index) => {};
+  const handleDelete = (event, index) => {
+    props.history.push("/delete", {
+      piece: pieces[index],
+      index: index,
+      action: "DEL",
+    });
+  };
 
   console.log(pieces);
   return (
@@ -166,7 +166,7 @@ const Gallery = (props) => {
               <Card className={classes.card}>
                 <CardMedia
                   className={classes.cardMedia}
-                  image={piece.image_url}
+                  image={piece.image_url || noImage}
                   title="Image title"
                 />
                 <CardContent className={classes.cardContent}>
@@ -218,7 +218,10 @@ const Gallery = (props) => {
                           </Tooltip>
                         </Grid>
                         <Grid item xs={4} sm={4} md={4} xl={4}>
-                          <Tooltip title="Eliminar">
+                          <Tooltip
+                            title="Eliminar"
+                            onClick={(event) => handleDelete(event, index)}
+                          >
                             <DeleteIcon />
                           </Tooltip>
                         </Grid>

@@ -25,6 +25,7 @@ import * as actions from "../../store/actions";
 
 import { shallowEqual, useDispatch, useSelector } from "react-redux";
 import Spinner from "../../commponents/Spinner/Spinner";
+import DetailsCard from "../../commponents/Details/DetailsCard";
 
 const useStyles = makeStyles((theme) => ({
   icon: {
@@ -79,16 +80,9 @@ const Gallery = (props) => {
   const pieces = useSelector((state) => state.pieces, shallowEqual);
   const isAuth = useSelector((state) => state.token, shallowEqual);
   const loading = useSelector((state) => state.loading);
+  const [details, setDetails] = useState(false);
 
   const dispatch = useDispatch();
-
-  // useEffect(() => {
-  //   dispatch(actions.getPieces());
-  // }, []);
-
-  // useEffect(() => {
-  //   auth ? setIsAuth(true) : setIsAuth(false);
-  // }, [auth]);
 
   const handleCreate = () => {
     props.history.push("/create", { piece: piece, action: "CRE" });
@@ -118,11 +112,13 @@ const Gallery = (props) => {
     dispatch(actions.updatePiece(data, index, isAuth));
   };
 
-  console.log(pieces);
+  const handleDetails = (event, index) => {
+    props.history.push("/details", { piece: pieces[index] });
+  };
+
   return (
     <React.Fragment>
       <CssBaseline />
-
       <div className={classes.welcomeContent}>
         {!loading ? (
           <Container maxWidth="sm">
@@ -173,7 +169,7 @@ const Gallery = (props) => {
         <Grid container spacing={8}>
           {pieces.map((piece, index) => (
             <Grid item key={piece.id} xs={12} sm={6} md={4}>
-              <Card className={classes.card}>
+              <Card elevation={15} className={classes.card}>
                 <CardMedia
                   className={classes.cardMedia}
                   image={piece.image_url || noImage}
@@ -193,7 +189,11 @@ const Gallery = (props) => {
                     justify="center"
                   >
                     <Grid item xs={3} sm={3} md={3} xl={3}>
-                      <Button size="small" color="primary">
+                      <Button
+                        size="small"
+                        color="primary"
+                        onClick={(event) => handleDetails(event, index)}
+                      >
                         Detalles
                       </Button>
                     </Grid>

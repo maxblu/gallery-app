@@ -9,6 +9,7 @@ import { shallowEqual, useDispatch, useSelector } from "react-redux";
 import { authCheckState, getPieces } from "./store/actions";
 import DateFnsUtils from "@date-io/date-fns";
 import { MuiPickersUtilsProvider } from "@material-ui/pickers";
+import DetailsCard from "./commponents/Details/DetailsCard";
 
 function App() {
   const dispatch = useDispatch();
@@ -28,6 +29,7 @@ function App() {
             <Route path="/create" component={CreatePieceForm}></Route>
             <Route path="/edit" component={CreatePieceForm}></Route>
             <Route path="/delete" component={CreatePieceForm} />
+            <Route path="/details" component={DetailsCard} />
             <Route path="/home" component={Gallery} />
             <Route path="/login" component={LogIn} />
             <Redirect from="/" to="/home" />

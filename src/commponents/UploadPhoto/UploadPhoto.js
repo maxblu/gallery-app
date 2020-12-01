@@ -38,11 +38,6 @@ const UploadPhoto = (props) => {
           justify="center"
         >
           <Grid item>
-            {/* <Tooltip title="Subir Foto" onClick={props.handleUpload}> */}
-            {/* <input type="file" /> */}
-            {/* <input type="file" hidden /> */}
-            {/* </CloudUploadIcon> */}
-            {/* </Tooltip> */}
             <Button
               variant="contained"
               component="label"

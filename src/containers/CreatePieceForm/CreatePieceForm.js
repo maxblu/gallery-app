@@ -57,6 +57,13 @@ const CreatePieceForm = (props) => {
   // useEffect(() => {
   //   setPiece({ ...props.location.state.piece });
   // }, []);
+  let disabled = false;
+  let button_label = "Salvar";
+
+  if (props.location.state.action === "DEL") {
+    disabled = true;
+    button_label = "Eliminar";
+  }
 
   useEffect(() => {
     if (piece.image_url) {
@@ -88,7 +95,7 @@ const CreatePieceForm = (props) => {
 
   const handleUploadPiece = (e) => {
     e.preventDefault();
-
+    dispatch(actions.startCRUD());
     props.location.action === "DEL"
       ? dispatch(
           actions.handleDatabaseAction(
@@ -121,6 +128,7 @@ const CreatePieceForm = (props) => {
               <UploadPhoto
                 handleUpload={handleUploadPhoto}
                 photo={photo.preview}
+                disabled={disabled}
               />
               <Grid container>
                 <Grid item xs={12} sm={12} md={12} lg={12} xl={12}>
@@ -136,6 +144,7 @@ const CreatePieceForm = (props) => {
                     //   helperText={emailMesg}
                     label="Título"
                     onChange={handleChange}
+                    disabled={disabled}
                   />
                 </Grid>
                 <Grid item xs={12} sm={12} md={12} lg={12} xl={12}>
@@ -150,6 +159,7 @@ const CreatePieceForm = (props) => {
                     //   helperText={emailMesg}
                     label="Autor"
                     onChange={handleChange}
+                    disabled={disabled}
                   />
                 </Grid>
                 <Grid item xs={12} sm={12} md={12} lg={12} xl={12}>
@@ -165,7 +175,8 @@ const CreatePieceForm = (props) => {
                     label="Manifestación artística"
                     // value={piece?piece.manif}
                     onChange={handleChange}
-                    //   onChange={handleChangeEmail}
+                    disabled={disabled} //   onChange={handleChangeEmail
+
                     //   autoComplete="email"
                     //   autoFocus
                   />
@@ -182,6 +193,7 @@ const CreatePieceForm = (props) => {
                     //   helperText={emailMesg}
                     label="Técnica"
                     onChange={handleChange}
+                    disabled={disabled}
                   />
                 </Grid>
                 <Grid item xs={12} sm={12} md={12} lg={12} xl={12}>
@@ -196,7 +208,8 @@ const CreatePieceForm = (props) => {
                     //   helperText={emailMesg}
                     label="Premios"
                     onChange={handleChange}
-                    placeholder="Introdusca los premios separados por comas"
+                    disabled={disabled}
+                    placeholder="Introduzca los premios separados por comas"
                   />
                 </Grid>
 
@@ -212,6 +225,7 @@ const CreatePieceForm = (props) => {
                     //   helperText={emailMesg}
                     label="Precio"
                     onChange={handleChange}
+                    disabled={disabled}
                   />
                 </Grid>
                 <Grid
@@ -228,6 +242,7 @@ const CreatePieceForm = (props) => {
                     label="Año"
                     value={piece ? piece.year : new Date()}
                     onChange={hanldeYearChange}
+                    disabled={disabled}
                     variant="inline"
                     fullWidth
                     animateYearScrolling
@@ -244,7 +259,7 @@ const CreatePieceForm = (props) => {
                 style={{ marginTop: "10%" }}
               >
                 <Button type="summit" color="primary" variant="contained">
-                  Salvar
+                  {button_label}
                 </Button>
               </Grid>
             </Paper>

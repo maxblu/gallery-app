@@ -24,6 +24,7 @@ import * as actions from "../../store/actions";
 // import axios from "../../axios-orders";
 
 import { shallowEqual, useDispatch, useSelector } from "react-redux";
+import Spinner from "../../commponents/Spinner/Spinner";
 
 const useStyles = makeStyles((theme) => ({
   icon: {
@@ -57,8 +58,6 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const cards = [1, 2, 3, 4, 5, 6];
-
 const piece = {
   title: "",
   image_url: null,
@@ -79,6 +78,7 @@ const Gallery = (props) => {
   //   const [isAdminPage, setisAdminPage] = useState();
   const pieces = useSelector((state) => state.pieces, shallowEqual);
   const isAuth = useSelector((state) => state.token, shallowEqual);
+  const loading = useSelector((state) => state.loading);
 
   const dispatch = useDispatch();
 
@@ -112,57 +112,67 @@ const Gallery = (props) => {
     });
   };
 
+  const toggleVisibility = (event, index) => {
+    const data = { ...pieces[index], visible: !pieces[index].visible };
+
+    dispatch(actions.updatePiece(data, index, isAuth));
+  };
+
   console.log(pieces);
   return (
     <React.Fragment>
       <CssBaseline />
 
       <div className={classes.welcomeContent}>
-        <Container maxWidth="sm">
-          <Typography
-            component="h1"
-            variant="h2"
-            align="center"
-            color="textPrimary"
-            gutterBottom
-          >
-            Galería Dream Solutions
-          </Typography>
-          <Typography
-            variant="h5"
-            align="center"
-            color="textSecondary"
-            paragraph
-          >
-            Bienvenidos a nuestra galeria donde encontrará lo que busca.
-          </Typography>
-          <div className={classes.filterBottons}>
-            <Grid container spacing={2} justify="center">
-              <Grid item>
-                <Button variant="contained" color="primary">
-                  Buscar
-                </Button>
-              </Grid>
-              <Grid item>
-                {isAuth && (
-                  <Button
-                    variant="contained"
-                    color="primary"
-                    onClick={handleCreate}
-                  >
-                    Añadir Obra
+        {!loading ? (
+          <Container maxWidth="sm">
+            <Typography
+              component="h1"
+              variant="h2"
+              align="center"
+              color="textPrimary"
+              gutterBottom
+            >
+              Galería Dream Solutions
+            </Typography>
+            <Typography
+              variant="h5"
+              align="center"
+              color="textSecondary"
+              paragraph
+            >
+              Bienvenidos a nuestra galeria donde encontrará lo que busca.
+            </Typography>
+            <div className={classes.filterBottons}>
+              <Grid container spacing={2} justify="center">
+                <Grid item>
+                  <Button variant="contained" color="primary">
+                    Buscar
                   </Button>
-                )}
+                </Grid>
+                <Grid item>
+                  {isAuth && (
+                    <Button
+                      variant="contained"
+                      color="primary"
+                      onClick={handleCreate}
+                    >
+                      Añadir Obra
+                    </Button>
+                  )}
+                </Grid>
               </Grid>
-            </Grid>
-          </div>
-        </Container>
+            </div>
+          </Container>
+        ) : (
+          <Spinner />
+        )}
       </div>
       <Container className={classes.cardGrid} maxWidth="md">
         {/* End hero unit */}
         <Grid container spacing={8}>
           {pieces.map((piece, index) => (
-            <Grid item key={piece.image_url} xs={12} sm={6} md={4}>
+            <Grid item key={piece.id} xs={12} sm={6} md={4}>
               <Card className={classes.card}>
                 <CardMedia
                   className={classes.cardMedia}
@@ -197,11 +207,21 @@ const Gallery = (props) => {
                       >
                         <Grid item xs={4} sm={4} md={4} xl={4}>
                           {piece.visible ? (
-                            <Tooltip title="Visible">
+                            <Tooltip
+                              title="Visible"
+                              onClick={(event) =>
+                                toggleVisibility(event, index)
+                              }
+                            >
                               <VisibilityIcon />
                             </Tooltip>
                           ) : (
-                            <Tooltip title="Oculta">
+                            <Tooltip
+                              title="Oculta"
+                              onClick={(event) =>
+                                toggleVisibility(event, index)
+                              }
+                            >
                               <VisibilityOffIcon />
                             </Tooltip>
                           )}

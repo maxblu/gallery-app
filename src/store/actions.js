@@ -259,8 +259,6 @@ export const handleDatabaseAction = (
 };
 export const crudManager = (piece, photo, action, index, token) => {
   return (dispatch) => {
-    dispatch(startCRUD);
-
     if (piece.image_url && photo.changedPhoto) {
       dispatch(deleteOldOne(piece.image_url));
     }

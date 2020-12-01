@@ -43,7 +43,11 @@ const UploadPhoto = (props) => {
             {/* <input type="file" hidden /> */}
             {/* </CloudUploadIcon> */}
             {/* </Tooltip> */}
-            <Button variant="contained" component="label">
+            <Button
+              variant="contained"
+              component="label"
+              disabled={props.disabled}
+            >
               <CloudUploadIcon />
               Elegir Foto
               <input type="file" hidden onChange={props.handleUpload} />

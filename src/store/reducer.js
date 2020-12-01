@@ -40,6 +40,7 @@ const reducer = (state = reduxState, action) => {
       };
     }
     case actionTypes.START_CRUD: {
+      console.log("Start Crud");
       return { ...state, loading: true };
     }
     case actionTypes.LIS_FAIL: {
@@ -70,7 +71,7 @@ const reducer = (state = reduxState, action) => {
     }
     case actionTypes.DEL: {
       const pieces = [...state.pieces];
-      pieces.splice(action.index, action.index + 1);
+      pieces.splice(action.index, 1);
 
       return { ...state, pieces, loading: false };
     }

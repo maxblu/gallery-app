@@ -9,7 +9,7 @@ import { shallowEqual, useDispatch, useSelector } from "react-redux";
 import { authCheckState, getPieces } from "./store/actions";
 import DateFnsUtils from "@date-io/date-fns";
 import { MuiPickersUtilsProvider } from "@material-ui/pickers";
-import DetailsCard from "./commponents/Details/DetailsCard";
+import DetailsCard from "./commponents/DetailsCard/DetailsCard";
 
 function App() {
   const dispatch = useDispatch();
@@ -17,24 +17,36 @@ function App() {
 
   useEffect(() => {
     dispatch(authCheckState());
-    dispatch(getPieces());
   }, []);
+
+  let routes = (
+    <Switch>
+      <Route path="/details" component={DetailsCard} />
+      <Route path="/login" component={LogIn} />
+      <Route path="/admin" component={Gallery} />
+      <Route path="/create" component={CreatePieceForm}></Route>
+      <Route path="/edit" component={CreatePieceForm}></Route>
+      <Route path="/delete" component={CreatePieceForm} />
+
+      <Redirect from="/" to="/admin" />
+    </Switch>
+  );
+
+  if (!isAuth) {
+    routes = (
+      <Switch>
+        <Route path="/home" component={Gallery} />
+        <Route path="/login" component={LogIn} />
+        <Route path="/details" component={DetailsCard} />
+        <Redirect from="/" to="/home" />
+      </Switch>
+    );
+  }
 
   return (
     <MuiPickersUtilsProvider utils={DateFnsUtils}>
       <div className="App">
-        <Layout>
-          <Switch>
-            <Route path="/admin" component={Gallery} />
-            <Route path="/create" component={CreatePieceForm}></Route>
-            <Route path="/edit" component={CreatePieceForm}></Route>
-            <Route path="/delete" component={CreatePieceForm} />
-            <Route path="/details" component={DetailsCard} />
-            <Route path="/home" component={Gallery} />
-            <Route path="/login" component={LogIn} />
-            <Redirect from="/" to="/home" />
-          </Switch>
-        </Layout>
+        <Layout>{routes}</Layout>
       </div>
     </MuiPickersUtilsProvider>
   );

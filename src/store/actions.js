@@ -4,6 +4,7 @@ import { storage } from "../firebase/firebase";
 export const ADD = "CRE";
 export const DEL = "DEL";
 export const UPD = "UPD";
+export const PATCHV = "PATCHV";
 export const LIS = "LIS";
 export const LIS_FAIL = "LIST_FAIL";
 export const START_CRUD = "START_CRUD";
@@ -79,6 +80,8 @@ export const auth = (email, password, method) => {
         localStorage.setItem("userId", resp.data.localId);
 
         dispatch(authSuccess(resp.data));
+
+        // dispatch(getPieces("admin"));
         dispatch(checkTokenTimeOut(resp.data.expiresIn));
       })
       .catch((err) => {
@@ -98,6 +101,8 @@ export const authCheckState = () => {
       if (new Date() <= expirationDate) {
         const userId = localStorage.getItem("userId");
         dispatch(authSuccess({ localId: userId, idToken: token }));
+
+        // dispatch(getPieces("admin"));
         dispatch(
           checkTokenTimeOut(
             (expirationDate.getTime() - new Date().getTime()) / 1000
@@ -130,11 +135,17 @@ export const getPiecesFail = (error) => {
   };
 };
 
-export const getPieces = () => {
+export const getPieces = (mode) => {
   return (dispatch) => {
+    let url = "/pieces.json";
+    if (mode === "user") {
+      url = '/pieces.json?orderBy="visible"&equalTo=true';
+    }
+
     axios
-      .get("/pieces.json")
+      .get(url)
       .then((resp) => {
+        console.log(resp);
         const fetchedPieces = [];
         for (let key in resp.data) {
           fetchedPieces.push({ ...resp.data[key], id: key });
@@ -142,7 +153,8 @@ export const getPieces = () => {
         dispatch(getPiecesSucces(fetchedPieces));
       })
       .catch((err) => {
-        dispatch(getPiecesFail(err.response.data.error));
+        console.log(err);
+        dispatch(getPiecesFail(err));
       });
   };
 };
@@ -166,15 +178,36 @@ export const update = (piece, index) => {
   };
 };
 
+export const updatePartial = (visible, index) => {
+  return {
+    type: PATCHV,
+    visible: visible,
+    index: index,
+  };
+};
+
 export const updatePiece = (piece, index, token) => {
   return (dispatch) => {
+    dispatch(update(piece, index));
     axios
       .put("/pieces/" + piece.id + ".json?auth=" + token, piece)
-      .then((resp) => {
-        dispatch(update(piece, index));
-      })
+      .then((resp) => {})
       .catch((erro) => {
         console.log(erro);
+      });
+  };
+};
+
+export const updatePartialPiece = (id, data, index, token) => {
+  return (dispatch) => {
+    dispatch(updatePartial(data.visible, index));
+    axios
+      .patch("/pieces/" + id + ".json?auth=" + token, data)
+      .then((resp) => {
+        console.log(resp);
+      })
+      .catch((err) => {
+        console.log(err);
       });
   };
 };

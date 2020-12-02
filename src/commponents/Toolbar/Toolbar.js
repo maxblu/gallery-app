@@ -63,7 +63,10 @@ const Mytoolbar = (props) => {
       ));
 
   return (
-    <AppBar position="fixed">
+    <AppBar
+      position="fixed"
+      style={{ overflow: "hidden", backgroundColor: "black" }}
+    >
       <Toolbar>
         <IconButton
           edge="start"

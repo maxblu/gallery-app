@@ -2,13 +2,34 @@ import React, { useState, useEffect } from "react";
 import Classes from "./Layout.module.css";
 import Toolbar from "../../commponents/Toolbar/Toolbar";
 import Drawer from "@material-ui/core/Drawer";
-import { Divider, Grid } from "@material-ui/core";
+import { Button, Grid, makeStyles } from "@material-ui/core";
 import NavigationItem from "../../commponents/NavigationItem/NavigationItem";
 import { useDispatch, useSelector, shallowEqual } from "react-redux";
 import * as actions from "../../store/actions";
 import { useHistory } from "react-router-dom";
+import Footer from "../../commponents/Footer/Footer";
+
+const drawerWidth = 240;
+
+const useStyles = makeStyles((theme) => ({
+  drawer: {
+    width: drawerWidth,
+    flexShrink: 0,
+  },
+  drawerPaper: {
+    width: drawerWidth,
+  },
+  // necessary for content to be below app bar
+  toolbar: theme.mixins.toolbar,
+  content: {
+    flexGrow: 1,
+    backgroundColor: theme.palette.background.default,
+    padding: theme.spacing(3),
+  },
+}));
 
 const Layout = (props) => {
+  const classes = useStyles();
   const [showSideDrower, setshowSideDrower] = useState(false);
   const [title, setTitle] = useState();
   const [isAuth, setIsAuth] = useState(false);
@@ -84,18 +105,24 @@ const Layout = (props) => {
         alignContent="center"
         alignItems="center"
       >
-        <Grid item xs={12}>
+        <Grid
+          item
+          xs={12}
+          style={{
+            width: "15%",
+          }}
+        >
           <NavigationItem
             sideDrawerHandler={sideDrawerClosedHandler}
             link="/admin"
           >
-            Administracion
+            Administración
           </NavigationItem>
         </Grid>
-        <Grid item xs={12}>
+        <Grid item xs={12} style={{}}>
           <NavigationItem
             sideDrawerHandler={sideDrawerClosedHandler}
-            link="/login"
+            link="/admin"
           >
             Salir
           </NavigationItem>
@@ -105,33 +132,38 @@ const Layout = (props) => {
   }
 
   return (
-    <Grid container justify="center" alignContent="center">
-      <Grid
-        item
-        // className={classes.Toolbar}
-        xs={12}
-        sm={12}
-        md={12}
-        lg={12}
-        xl={12}
-      >
-        <Toolbar
-          title={title}
-          show={sideDrawerOpendHandler}
-          logout={handleLogOut}
-          isAuth={isAuth}
-          loginButtonHandler={handleLoging}
-        ></Toolbar>
+    <React.Fragment>
+      <Grid container justify="center" alignContent="center">
+        <Grid
+          item
+          // className={classes.Toolbar}
+          xs={12}
+        >
+          <Toolbar
+            title={title}
+            show={sideDrawerOpendHandler}
+            logout={handleLogOut}
+            isAuth={isAuth}
+            loginButtonHandler={handleLoging}
+          ></Toolbar>
+        </Grid>
+        <Grid item>
+          <Drawer
+            open={showSideDrower}
+            onClose={sideDrawerClosedHandler}
+            // classes={{
+            //   paper: classes.drawerPaper,
+            // }}
+          >
+            {drawer_items}
+          </Drawer>
+        </Grid>
+        <Grid item xs={12}>
+          <main className={Classes.content}>{props.children}</main>
+          <Footer />
+        </Grid>
       </Grid>
-      <Grid item>
-        <Drawer open={showSideDrower} onClose={sideDrawerClosedHandler}>
-          {drawer_items}
-        </Drawer>
-      </Grid>
-      <Grid item xs={12} sm={12} md={12} lg={12} xl={12}>
-        <main className={Classes.content}>{props.children}</main>
-      </Grid>
-    </Grid>
+    </React.Fragment>
   );
 };
 

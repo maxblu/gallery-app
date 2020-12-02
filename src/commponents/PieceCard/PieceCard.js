@@ -1,0 +1,131 @@
+import React from "react";
+import {
+  Card,
+  CardMedia,
+  CardActions,
+  CardContent,
+  Grid,
+  Typography,
+  Button,
+  Tooltip,
+  makeStyles,
+} from "@material-ui/core";
+import {
+  DetailsRounded,
+  VisibilityOff,
+  Visibility,
+  Edit,
+  Delete,
+} from "@material-ui/icons";
+
+import noImage from "../../assets/images/noImage.png";
+
+const useStyles = makeStyles((theme) => ({
+  card: {
+    height: "100%",
+    display: "flex",
+    flexDirection: "column",
+  },
+  cardMedia: {
+    paddingTop: "56.25%", // 16:9
+  },
+  cardContent: {
+    flexGrow: 1,
+  },
+}));
+
+const PieceCard = ({
+  piece,
+  index,
+  showAdminActions,
+  handleEdit,
+  handleDelete,
+  handleDetails,
+  toggleVisibility,
+}) => {
+  const classes = useStyles();
+  return (
+    <Card elevation={15} className={classes.card}>
+      <CardMedia
+        className={classes.cardMedia}
+        image={piece.image_url || noImage}
+        title="Image title"
+      />
+      <CardContent className={classes.cardContent}>
+        <Typography gutterBottom variant="h5" component="h2">
+          {piece.title}
+        </Typography>
+        <Typography variant="caption">De: {piece.author}</Typography>
+      </CardContent>
+      <CardActions>
+        <Grid
+          container
+          // direction="column"
+          alignItems="center"
+          alignContent="center"
+          justify="center"
+        >
+          <Grid item xs={3} sm={3} md={3} xl={3}>
+            <Tooltip title="Detalles">
+              <Button
+                size="small"
+                color="primary"
+                onClick={(event) => handleDetails(event, index)}
+              >
+                <DetailsRounded></DetailsRounded>
+              </Button>
+            </Tooltip>
+          </Grid>
+          {showAdminActions && (
+            <Grid
+              container
+              // direction="column"
+              alignItems="center"
+              alignContent="center"
+              justify="center"
+            >
+              <Grid item xs={4} sm={4} md={4} xl={4}>
+                {piece.visible ? (
+                  <Tooltip
+                    title="Visible"
+                    onClick={(event) => toggleVisibility(event, index)}
+                  >
+                    <Visibility />
+                  </Tooltip>
+                ) : (
+                  <Tooltip
+                    title="Oculta"
+                    onClick={(event) => toggleVisibility(event, index)}
+                  >
+                    <VisibilityOff />
+                  </Tooltip>
+                )}
+              </Grid>
+              <Grid item xs={4} sm={4} md={4} xl={4}>
+                <Tooltip
+                  title="Editar"
+                  id="edit"
+                  onClick={(event) => handleEdit(event, index)}
+                >
+                  {/* <IconButton aria-label="edit" > */}
+                  <Edit />
+                  {/* </IconButton> */}
+                </Tooltip>
+              </Grid>
+              <Grid item xs={4} sm={4} md={4} xl={4}>
+                <Tooltip
+                  title="Eliminar"
+                  onClick={(event) => handleDelete(event, index)}
+                >
+                  <Delete />
+                </Tooltip>
+              </Grid>
+            </Grid>
+          )}
+        </Grid>
+      </CardActions>
+    </Card>
+  );
+};
+
+export default PieceCard;

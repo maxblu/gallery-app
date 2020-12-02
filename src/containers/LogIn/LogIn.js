@@ -15,7 +15,7 @@ import { useHistory } from "react-router-dom";
 
 const useStyles = makeStyles((theme) => ({
   paper: {
-    marginTop: theme.spacing(8),
+    marginTop: theme.spacing(4),
     display: "flex",
     flexDirection: "column",
     alignItems: "center",
@@ -26,10 +26,14 @@ const useStyles = makeStyles((theme) => ({
   },
   form: {
     width: "100%", // Fix IE 11 issue.
-    marginTop: theme.spacing(1),
+    // marginTop: theme.spacing(10),
+    // marginBottom: theme.spacing(10),
   },
+
   submit: {
     margin: theme.spacing(3, 0, 2),
+    // backgroundColor: "black",
+    // color: "white",
   },
 }));
 
@@ -110,8 +114,9 @@ export default function SignIn() {
           helperText={emailMesg}
           label="Correo"
           onChange={handleChangeEmail}
-          autoComplete="email"
+          // autoComplete="email"
           autoFocus
+          color="black"
         />
         <TextField
           variant="outlined"
@@ -134,8 +139,8 @@ export default function SignIn() {
         <Button
           type="submit"
           fullWidth
-          variant="contained"
           color="primary"
+          variant="contained"
           className={classes.submit}
         >
           Entrar

@@ -75,6 +75,14 @@ const reducer = (state = reduxState, action) => {
 
       return { ...state, pieces, loading: false };
     }
+    case actionTypes.PATCHV: {
+      const pieces = [...state.pieces];
+      pieces[action.index].visible = !pieces[action.index].visible;
+      return {
+        ...state,
+        pieces,
+      };
+    }
 
     default:
       return state;

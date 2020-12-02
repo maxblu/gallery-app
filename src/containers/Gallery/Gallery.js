@@ -12,6 +12,7 @@ import Grid from "@material-ui/core/Grid";
 import Typography from "@material-ui/core/Typography";
 import { makeStyles } from "@material-ui/core/styles";
 import Container from "@material-ui/core/Container";
+import MuiAlert from "@material-ui/lab/Alert";
 
 import Tooltip from "@material-ui/core/Tooltip";
 import DeleteIcon from "@material-ui/icons/Delete";
@@ -25,7 +26,11 @@ import * as actions from "../../store/actions";
 
 import { shallowEqual, useDispatch, useSelector } from "react-redux";
 import Spinner from "../../commponents/Spinner/Spinner";
-import DetailsCard from "../../commponents/Details/DetailsCard";
+// import DetailsCard from "../../commponents/DetailsCard/DetailsCard";
+
+import PieceCard from "../../commponents/PieceCard/PieceCard";
+import { ArrowBack, ArrowBackIos, ArrowForwardIos } from "@material-ui/icons";
+import { Snackbar } from "@material-ui/core";
 
 const useStyles = makeStyles((theme) => ({
   icon: {
@@ -57,6 +62,9 @@ const useStyles = makeStyles((theme) => ({
     backgroundColor: theme.palette.background.paper,
     padding: theme.spacing(6),
   },
+  pagination: {
+    padding: theme.spacing(8),
+  },
 }));
 
 const piece = {
@@ -71,18 +79,65 @@ const piece = {
   awards: "",
   visible: true,
 };
+const ITEM_PER_PAGE = 3;
+
+function Alert(props) {
+  return <MuiAlert elevation={6} variant="filled" {...props} />;
+}
 
 const Gallery = (props) => {
   const classes = useStyles();
+  const [currentPage, setCurrentPage] = useState(1);
+  const [currentStartIndex, setCurrentStartIndex] = useState(0);
   // const [isAuth, setIsAuth] = useState(false);
 
   //   const [isAdminPage, setisAdminPage] = useState();
-  const pieces = useSelector((state) => state.pieces, shallowEqual);
+  const pieces = useSelector((state) => state.pieces);
   const isAuth = useSelector((state) => state.token, shallowEqual);
-  const loading = useSelector((state) => state.loading);
-  const [details, setDetails] = useState(false);
+  const loading = useSelector((state) => state.loading, shallowEqual);
+
+  const numberOfPages = Math.ceil(pieces.length / ITEM_PER_PAGE);
 
   const dispatch = useDispatch();
+  let pieces_for_visitors = null;
+
+  useEffect(() => {
+    console.log("llame");
+    if (isAuth) {
+      dispatch(actions.getPieces("admin"));
+    } else {
+      dispatch(actions.getPieces("user"));
+      setCurrentPage(1);
+      setCurrentStartIndex(0);
+    }
+  }, [isAuth]);
+
+  // useEffect(() => {
+  //   if (!isAuth){
+  //     for(let item in pieces){
+  //       if (item.visible)
+  //       pieces_for_visitors.push(item)
+  //     }
+
+  //   }
+
+  // }, [isAuth]);
+
+  console.log(pieces);
+  const handlePrevNext = (e, id) => {
+    console.log(currentPage);
+    if (id === "next" && currentPage + 1 <= numberOfPages) {
+      setCurrentStartIndex(currentStartIndex + ITEM_PER_PAGE);
+      setCurrentPage(currentPage + 1);
+      window.scrollTo(0, 400);
+    }
+
+    if (id === "back" && currentPage - 1 > 0) {
+      setCurrentStartIndex(currentStartIndex - ITEM_PER_PAGE);
+      setCurrentPage(currentPage - 1);
+      window.scrollTo(0, 400);
+    }
+  };
 
   const handleCreate = () => {
     props.history.push("/create", { piece: piece, action: "CRE" });
@@ -107,9 +162,9 @@ const Gallery = (props) => {
   };
 
   const toggleVisibility = (event, index) => {
-    const data = { ...pieces[index], visible: !pieces[index].visible };
+    const data = { visible: !pieces[index].visible };
 
-    dispatch(actions.updatePiece(data, index, isAuth));
+    dispatch(actions.updatePartialPiece(pieces[index].id, data, index, isAuth));
   };
 
   const handleDetails = (event, index) => {
@@ -166,94 +221,58 @@ const Gallery = (props) => {
       </div>
       <Container className={classes.cardGrid} maxWidth="md">
         {/* End hero unit */}
-        <Grid container spacing={8}>
-          {pieces.map((piece, index) => (
-            <Grid item key={piece.id} xs={12} sm={6} md={4}>
-              <Card elevation={15} className={classes.card}>
-                <CardMedia
-                  className={classes.cardMedia}
-                  image={piece.image_url || noImage}
-                  title="Image title"
+        <Grid container spacing={4}>
+          {pieces
+            .slice(currentStartIndex, currentStartIndex + ITEM_PER_PAGE)
+            .map((piece, index) => (
+              <Grid item key={piece.id} xs={12} sm={6} md={4}>
+                <PieceCard
+                  piece={piece}
+                  index={index + currentStartIndex}
+                  handleCreate={handleCreate}
+                  handleEdit={handleEdit}
+                  handleDelete={handleDelete}
+                  handleDetails={handleDetails}
+                  toggleVisibility={toggleVisibility}
+                  showAdminActions={isAuth}
                 />
-                <CardContent className={classes.cardContent}>
-                  <Typography gutterBottom variant="h5" component="h2">
-                    {piece.title}
-                  </Typography>
-                </CardContent>
-                <CardActions>
-                  <Grid
-                    container
-                    // direction="column"
-                    alignItems="center"
-                    alignContent="center"
-                    justify="center"
-                  >
-                    <Grid item xs={3} sm={3} md={3} xl={3}>
-                      <Button
-                        size="small"
-                        color="primary"
-                        onClick={(event) => handleDetails(event, index)}
-                      >
-                        Detalles
-                      </Button>
-                    </Grid>
-                    {isAuth && (
-                      <Grid
-                        container
-                        // direction="column"
-                        alignItems="center"
-                        alignContent="center"
-                        justify="center"
-                      >
-                        <Grid item xs={4} sm={4} md={4} xl={4}>
-                          {piece.visible ? (
-                            <Tooltip
-                              title="Visible"
-                              onClick={(event) =>
-                                toggleVisibility(event, index)
-                              }
-                            >
-                              <VisibilityIcon />
-                            </Tooltip>
-                          ) : (
-                            <Tooltip
-                              title="Oculta"
-                              onClick={(event) =>
-                                toggleVisibility(event, index)
-                              }
-                            >
-                              <VisibilityOffIcon />
-                            </Tooltip>
-                          )}
-                        </Grid>
-                        <Grid item xs={4} sm={4} md={4} xl={4}>
-                          <Tooltip
-                            title="Editar"
-                            id="edit"
-                            onClick={(event) => handleEdit(event, index)}
-                          >
-                            {/* <IconButton aria-label="edit" > */}
-                            <EditIcon />
-                            {/* </IconButton> */}
-                          </Tooltip>
-                        </Grid>
-                        <Grid item xs={4} sm={4} md={4} xl={4}>
-                          <Tooltip
-                            title="Eliminar"
-                            onClick={(event) => handleDelete(event, index)}
-                          >
-                            <DeleteIcon />
-                          </Tooltip>
-                        </Grid>
-                      </Grid>
-                    )}
-                  </Grid>
-                </CardActions>
-              </Card>
-            </Grid>
-          ))}
+              </Grid>
+            ))}
         </Grid>
       </Container>
+      {numberOfPages > 1 ? (
+        <Grid
+          container
+          direction="row"
+          justify="center"
+          alignItems="center"
+          className={classes.pagination}
+        >
+          {currentPage > 1 ? (
+            <Grid item xs={3} sm={2} md={1} lg={1} xl={1}>
+              <IconButton id="back" onClick={(e) => handlePrevNext(e, "back")}>
+                <ArrowBackIos color="primary" />
+              </IconButton>
+            </Grid>
+          ) : null}
+          <Grid item xs={3} sm={2} md={1} lg={1} xl={1}>
+            <Typography>
+              {currentPage}/{numberOfPages}
+            </Typography>
+          </Grid>
+          {currentPage < numberOfPages ? (
+            <Grid item xs={3} sm={2} md={1} lg={1} xl={1}>
+              <IconButton onClick={(e) => handlePrevNext(e, "next")}>
+                <ArrowForwardIos color="primary" />
+              </IconButton>
+            </Grid>
+          ) : null}
+        </Grid>
+      ) : null}
+
+      {/* <Snackbar open={loading} autoHideDuration={6000}>
+        <Alert severity="success">Base de Datos sincrinizada</Alert>
+      </Snackbar> */}
     </React.Fragment>
   );
 };

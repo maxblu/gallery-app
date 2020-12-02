@@ -15,6 +15,7 @@ import {
 } from "@material-ui/core";
 import ArrowBackOutlinedIcon from "@material-ui/icons/ArrowBackOutlined";
 import React, { useEffect } from "react";
+import noPhoto from "../../assets/images/noImage.png";
 
 const useStyles = makeStyles((theme) => ({
   card: {
@@ -64,7 +65,7 @@ const DetailsCard = (props) => {
           />
           <CardMedia
             className={classes.cardMedia}
-            image={piece.image_url}
+            image={piece.image_url || noPhoto}
             title={piece.title}
           />
           <CardContent>

@@ -4,3 +4,4 @@
 - Hacer la paginación Lazy o añadir filtrado por campos en client siddrawer
 - Llenar el footer con algo
 - Trabajar en la optimización de imágenes.
+- Manejo de errores y sync con la nube mediante los sackbar

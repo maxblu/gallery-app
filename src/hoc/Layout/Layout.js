@@ -134,11 +134,7 @@ const Layout = (props) => {
   return (
     <React.Fragment>
       <Grid container justify="center" alignContent="center">
-        <Grid
-          item
-          // className={classes.Toolbar}
-          xs={12}
-        >
+        <Grid item xs={12}>
           <Toolbar
             title={title}
             show={sideDrawerOpendHandler}
@@ -148,19 +144,13 @@ const Layout = (props) => {
           ></Toolbar>
         </Grid>
         <Grid item>
-          <Drawer
-            open={showSideDrower}
-            onClose={sideDrawerClosedHandler}
-            // classes={{
-            //   paper: classes.drawerPaper,
-            // }}
-          >
+          <Drawer open={showSideDrower} onClose={sideDrawerClosedHandler}>
             {drawer_items}
           </Drawer>
         </Grid>
         <Grid item xs={12}>
           <main className={Classes.content}>{props.children}</main>
-          <Footer />
+          {/* <Footer /> */}
         </Grid>
       </Grid>
     </React.Fragment>

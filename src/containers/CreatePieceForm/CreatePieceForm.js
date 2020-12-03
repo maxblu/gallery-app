@@ -59,13 +59,16 @@ const CreatePieceForm = (props) => {
   // }, []);
   let disabled = false;
   let button_label = "Salvar";
+  let color = "primary";
 
   if (props.location.state.action === "DEL") {
     disabled = true;
     button_label = "Eliminar";
+    color = "secondary";
   }
 
   useEffect(() => {
+    window.scrollTo(0, 0);
     if (piece.image_url) {
       setPhoto({ ...photo, preview: piece.image_url });
     }
@@ -93,28 +96,27 @@ const CreatePieceForm = (props) => {
     setPiece({ ...piece, year: value });
   };
 
-  const handleUploadPiece = (e) => {
+  const handleUploadPiece = async (e) => {
     e.preventDefault();
     dispatch(actions.startCRUD());
-    props.location.action === "DEL"
-      ? dispatch(
-          actions.handleDatabaseAction(
-            piece,
-            piece.image_url,
-            "DEL",
-            props.location.index,
-            token
-          )
-        )
-      : dispatch(
-          actions.crudManager(
-            piece,
-            photo,
-            props.location.state.action,
-            props.location.state.index,
-            token
-          )
-        );
+    let data = null;
+
+    if (photo.changedPhoto && props.location.action !== "DEL") {
+      const imageUrl = await actions.handlePhotoStorage(piece.image_url, photo);
+      data = { ...piece, image_url: imageUrl };
+    } else {
+      data = { ...piece };
+    }
+
+    dispatch(
+      actions.crudManager(
+        data,
+        props.location.state.action,
+        props.location.state.index,
+        token
+      )
+    );
+
     props.history.replace("/admin");
   };
 
@@ -258,7 +260,7 @@ const CreatePieceForm = (props) => {
                 xl={12}
                 style={{ marginTop: "10%" }}
               >
-                <Button type="summit" color="primary" variant="contained">
+                <Button type="summit" color={color} variant="contained">
                   {button_label}
                 </Button>
               </Grid>

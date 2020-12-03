@@ -9,6 +9,7 @@ import {
   Button,
   Tooltip,
   makeStyles,
+  IconButton,
 } from "@material-ui/core";
 import {
   DetailsRounded,
@@ -87,17 +88,21 @@ const PieceCard = ({
               <Grid item xs={4} sm={4} md={4} xl={4}>
                 {piece.visible ? (
                   <Tooltip
-                    title="Visible"
+                    title="Ocultar"
                     onClick={(event) => toggleVisibility(event, index)}
                   >
-                    <Visibility />
+                    <IconButton color="inherit">
+                      <Visibility />
+                    </IconButton>
                   </Tooltip>
                 ) : (
                   <Tooltip
-                    title="Oculta"
+                    title="Mostrar"
                     onClick={(event) => toggleVisibility(event, index)}
                   >
-                    <VisibilityOff />
+                    <IconButton>
+                      <VisibilityOff />
+                    </IconButton>
                   </Tooltip>
                 )}
               </Grid>
@@ -107,9 +112,9 @@ const PieceCard = ({
                   id="edit"
                   onClick={(event) => handleEdit(event, index)}
                 >
-                  {/* <IconButton aria-label="edit" > */}
-                  <Edit />
-                  {/* </IconButton> */}
+                  <IconButton color="primary">
+                    <Edit />
+                  </IconButton>
                 </Tooltip>
               </Grid>
               <Grid item xs={4} sm={4} md={4} xl={4}>
@@ -117,7 +122,9 @@ const PieceCard = ({
                   title="Eliminar"
                   onClick={(event) => handleDelete(event, index)}
                 >
-                  <Delete />
+                  <IconButton color="secondary">
+                    <Delete />
+                  </IconButton>
                 </Tooltip>
               </Grid>
             </Grid>

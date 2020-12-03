@@ -6,6 +6,7 @@ export const reduxState = {
   userId: null,
   error: null,
   loading: false,
+  loadingVisibility: false,
 };
 
 const reducer = (state = reduxState, action) => {
@@ -75,12 +76,16 @@ const reducer = (state = reduxState, action) => {
 
       return { ...state, pieces, loading: false };
     }
+    case actionTypes.CHV: {
+      return { ...state, loadingVisibility: true };
+    }
     case actionTypes.PATCHV: {
       const pieces = [...state.pieces];
       pieces[action.index].visible = !pieces[action.index].visible;
       return {
         ...state,
         pieces,
+        loadingVisibility: false,
       };
     }
 

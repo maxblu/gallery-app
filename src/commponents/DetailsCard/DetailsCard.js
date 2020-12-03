@@ -12,7 +12,13 @@ import {
   CardActions,
   Button,
   Tooltip,
+  Divider,
+  Accordion,
+  AccordionSummary,
+  AccordionDetails,
+  ListItem,
 } from "@material-ui/core";
+import { ExpandMore } from "@material-ui/icons";
 import ArrowBackOutlinedIcon from "@material-ui/icons/ArrowBackOutlined";
 import React, { useEffect } from "react";
 import noPhoto from "../../assets/images/noImage.png";
@@ -75,22 +81,61 @@ const DetailsCard = (props) => {
               alignContent="center"
               alignItems="center"
               justify="center"
+              spacing={4}
             >
               <Grid item xs={12}>
-                <Typography>
-                  {"Manifestación Artística: " + piece.manif}
-                </Typography>
+                {piece.manif && (
+                  <Typography variant="h5">
+                    {"Manifestación Artística: " + piece.manif}
+                  </Typography>
+                )}
               </Grid>
+
+              {piece.tec && (
+                <Grid item xs={12}>
+                  <Typography variant="h5">
+                    {"Técnica: " + piece.tec}
+                  </Typography>
+                </Grid>
+              )}
+              {piece.price > 0 && (
+                <Grid item xs={12}>
+                  <Typography variant="h5">Precio: ${piece.price}</Typography>
+                </Grid>
+              )}
+              {piece.year && (
+                <Grid item xs={12}>
+                  <Typography variant="h5">
+                    {"Año: " + new Date(piece.year).getFullYear()}
+                  </Typography>
+                </Grid>
+              )}
+
               <Grid item xs={12}>
-                <Typography>{"Técnica: " + piece.tec}</Typography>
-              </Grid>{" "}
-              <Grid item xs={12}>
-                <Typography>
-                  {"Año: " + new Date(piece.year).getFullYear()}
-                </Typography>
-              </Grid>
-              <Grid item xs={12}>
-                <Typography>{"Precio: " + piece.price}</Typography>
+                <Accordion elevation={0}>
+                  <AccordionSummary expandIcon={<ExpandMore />}>
+                    <Typography variant="h5">Premios:</Typography>
+                  </AccordionSummary>
+                  <AccordionDetails>
+                    <Grid
+                      container
+                      direction="column"
+                      alignContent="center"
+                      alignItems="center"
+                      justify="center"
+                    >
+                      {piece.awards.split(",").map((award) => {
+                        return (
+                          <Grid item xs={12}>
+                            <ListItem>
+                              <Typography variant="h6"> {award}</Typography>
+                            </ListItem>
+                          </Grid>
+                        );
+                      })}
+                    </Grid>
+                  </AccordionDetails>
+                </Accordion>
               </Grid>
             </Grid>
           </CardContent>

@@ -92,9 +92,10 @@ const Gallery = (props) => {
   // const [isAuth, setIsAuth] = useState(false);
 
   //   const [isAdminPage, setisAdminPage] = useState();
-  const pieces = useSelector((state) => state.pieces);
+  const pieces = useSelector((state) => state.pieces, shallowEqual);
   const isAuth = useSelector((state) => state.token, shallowEqual);
   const loading = useSelector((state) => state.loading, shallowEqual);
+  const loadingVisibility = useSelector((state) => state.loadingVisibility);
 
   const numberOfPages = Math.ceil(pieces.length / ITEM_PER_PAGE);
 
@@ -104,6 +105,7 @@ const Gallery = (props) => {
   useEffect(() => {
     console.log("llame");
     if (isAuth) {
+      console.log("LISTANDO");
       dispatch(actions.getPieces("admin"));
     } else {
       dispatch(actions.getPieces("user"));
@@ -144,8 +146,6 @@ const Gallery = (props) => {
   };
 
   const handleEdit = (event, index) => {
-    console.log(index);
-
     props.history.push("/edit", {
       piece: pieces[index],
       index: index,
@@ -163,7 +163,7 @@ const Gallery = (props) => {
 
   const toggleVisibility = (event, index) => {
     const data = { visible: !pieces[index].visible };
-
+    dispatch(actions.startCHAV());
     dispatch(actions.updatePartialPiece(pieces[index].id, data, index, isAuth));
   };
 

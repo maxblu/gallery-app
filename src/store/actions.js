@@ -7,7 +7,9 @@ export const UPD = "UPD";
 export const PATCHV = "PATCHV";
 export const LIS = "LIS";
 export const LIS_FAIL = "LIST_FAIL";
+
 export const START_CRUD = "START_CRUD";
+export const CHV = "START_CHV";
 
 export const AUTH_START = "AUTH_START";
 export const AUTH_SUCCESS = "AUTH_SUCCESS";
@@ -48,6 +50,62 @@ export const authFail = (error) => {
   return {
     type: AUTH_FAIL,
     error: error,
+  };
+};
+
+export const startCRUD = () => {
+  return {
+    type: START_CRUD,
+  };
+};
+
+export const startCHAV = () => {
+  return {
+    type: CHV,
+  };
+};
+
+export const getPiecesSucces = (pieces) => {
+  return {
+    type: LIS,
+    pieces: pieces,
+  };
+};
+
+export const getPiecesFail = (error) => {
+  return {
+    type: LIS_FAIL,
+    error: error,
+  };
+};
+
+export const update = (piece, index) => {
+  return {
+    type: UPD,
+    piece: piece,
+    index: index,
+  };
+};
+
+export const updatePartial = (visible, index) => {
+  return {
+    type: PATCHV,
+    visible: visible,
+    index: index,
+  };
+};
+
+export const create = (piece) => {
+  return {
+    type: ADD,
+    piece: piece,
+  };
+};
+
+export const delet = (index) => {
+  return {
+    type: DEL,
+    index: index,
   };
 };
 
@@ -115,26 +173,6 @@ export const authCheckState = () => {
   };
 };
 
-export const startCRUD = () => {
-  return {
-    type: START_CRUD,
-  };
-};
-
-export const getPiecesSucces = (pieces) => {
-  return {
-    type: LIS,
-    pieces: pieces,
-  };
-};
-
-export const getPiecesFail = (error) => {
-  return {
-    type: LIS_FAIL,
-    error: error,
-  };
-};
-
 export const getPieces = (mode) => {
   return (dispatch) => {
     let url = "/pieces.json";
@@ -159,39 +197,13 @@ export const getPieces = (mode) => {
   };
 };
 
-export const deleteOldOne = (imageRef) => {
-  return (dispatch) => {
-    const deleteRef = storage.refFromURL(imageRef);
-
-    deleteRef
-      .delete()
-      .then((resp) => {})
-      .catch((err) => {});
-  };
-};
-
-export const update = (piece, index) => {
-  return {
-    type: UPD,
-    piece: piece,
-    index: index,
-  };
-};
-
-export const updatePartial = (visible, index) => {
-  return {
-    type: PATCHV,
-    visible: visible,
-    index: index,
-  };
-};
-
 export const updatePiece = (piece, index, token) => {
   return (dispatch) => {
-    dispatch(update(piece, index));
     axios
       .put("/pieces/" + piece.id + ".json?auth=" + token, piece)
-      .then((resp) => {})
+      .then((resp) => {
+        dispatch(update(piece, index));
+      })
       .catch((erro) => {
         console.log(erro);
       });
@@ -203,19 +215,11 @@ export const updatePartialPiece = (id, data, index, token) => {
     dispatch(updatePartial(data.visible, index));
     axios
       .patch("/pieces/" + id + ".json?auth=" + token, data)
-      .then((resp) => {
-        console.log(resp);
-      })
+      .then((resp) => {})
       .catch((err) => {
         console.log(err);
+        dispatch(updatePartial(!data.visible, index));
       });
-  };
-};
-
-export const create = (piece) => {
-  return {
-    type: ADD,
-    piece: piece,
   };
 };
 
@@ -232,17 +236,10 @@ export const createPiece = (piece, token) => {
   };
 };
 
-export const delet = (index) => {
-  return {
-    type: DEL,
-    index: index,
-  };
-};
-
 export const deletePiece = (piece, index, token) => {
   return (dispatch) => {
     if (piece.image_url) {
-      dispatch(deleteOldOne(piece.image_url));
+      deleteOldOne(piece.image_url);
     }
     axios
       .delete("/pieces/" + piece.id + ".json?auth=" + token)
@@ -256,16 +253,8 @@ export const deletePiece = (piece, index, token) => {
   };
 };
 
-export const handleDatabaseAction = (
-  piece,
-  fireBaseUrl,
-  action,
-  index,
-  token
-) => {
+export const crudManager = (data, action, index, token) => {
   return (dispatch) => {
-    const data = { ...piece, image_url: fireBaseUrl };
-
     switch (action) {
       case "CRE": {
         dispatch(createPiece(data, token));
@@ -276,7 +265,7 @@ export const handleDatabaseAction = (
         break;
       }
       case "DEL": {
-        dispatch(deletePiece(piece, index, token));
+        dispatch(deletePiece(data, index, token));
         break;
       }
 
@@ -284,54 +273,40 @@ export const handleDatabaseAction = (
         break;
     }
   };
-
-  // if (!isEdit) {
-  //   axios.post("/pieces.json?auth=" + token, data).then((resp) => {});
-  // } else {
-  // }
 };
-export const crudManager = (piece, photo, action, index, token) => {
-  return (dispatch) => {
-    if (piece.image_url && photo.changedPhoto) {
-      dispatch(deleteOldOne(piece.image_url));
+
+export const handlePhotoStorage = (image_url, photo) => {
+  return new Promise((resolve, reject) => {
+    if (image_url) {
+      deleteOldOne(image_url);
     }
 
-    if (photo.changedPhoto) {
-      const uploadTask = storage
-        .ref(`/images/${photo.raw.name}`)
-        .put(photo.raw);
+    const uploadTask = storage.ref(`/images/${photo.raw.name}`).put(photo.raw);
 
-      uploadTask.on(
-        "state_changed",
-        (snapShot) => {
-          //takes a snap shot of the process as it is happening
-          // const currentProgress = Math.round(
-          //   (snapShot.bytesTransferred / snapShot.totalBytes) * 100
-          // );
-          // setProgress(currentProgress);
-        },
-        (err) => {
-          //catches the errors
-          console.log(err);
-        },
-        () => {
-          // gets the functions from storage refences the image storage in firebase by the children
-          // gets the download url then sets the image from firebase as the value for the imgUrl key:
-          storage
-            .ref("images")
-            .child(photo.raw.name)
-            .getDownloadURL()
-            .then((fireBaseUrl) => {
-              dispatch(
-                handleDatabaseAction(piece, fireBaseUrl, action, index, token)
-              );
-            });
-        }
-      );
-    } else {
-      dispatch(
-        handleDatabaseAction(piece, piece.image_url, action, index, token)
-      );
-    }
-  };
+    uploadTask.on(
+      "state_changed",
+      (snapShot) => {},
+      (err) => {
+        reject(err);
+      },
+      () => {
+        storage
+          .ref("images")
+          .child(photo.raw.name)
+          .getDownloadURL()
+          .then((fireBaseUrl) => {
+            resolve(fireBaseUrl);
+          });
+      }
+    );
+  });
+};
+
+export const deleteOldOne = (imageRef) => {
+  const deleteRef = storage.refFromURL(imageRef);
+
+  deleteRef
+    .delete()
+    .then((resp) => {})
+    .catch((err) => {});
 };

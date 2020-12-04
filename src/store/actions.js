@@ -183,7 +183,6 @@ export const getPieces = (mode) => {
     axios
       .get(url)
       .then((resp) => {
-        console.log(resp);
         const fetchedPieces = [];
         for (let key in resp.data) {
           fetchedPieces.push({ ...resp.data[key], id: key });
@@ -191,7 +190,6 @@ export const getPieces = (mode) => {
         dispatch(getPiecesSucces(fetchedPieces));
       })
       .catch((err) => {
-        console.log(err);
         dispatch(getPiecesFail(err));
       });
   };
@@ -244,7 +242,6 @@ export const deletePiece = (piece, index, token) => {
     axios
       .delete("/pieces/" + piece.id + ".json?auth=" + token)
       .then((resp) => {
-        console.log("hice delete", resp);
         dispatch(delet(index));
       })
       .catch((err) => {
@@ -281,7 +278,9 @@ export const handlePhotoStorage = (image_url, photo) => {
       deleteOldOne(image_url);
     }
 
-    const uploadTask = storage.ref(`/images/${photo.raw.name}`).put(photo.raw);
+    const uploadTask = storage
+      .ref(`/images/${photo.raw.name}`)
+      .put(photo.raw.file);
 
     uploadTask.on(
       "state_changed",

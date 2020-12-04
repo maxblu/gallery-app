@@ -10,6 +10,8 @@ import {
   Tooltip,
   makeStyles,
   IconButton,
+  CardActionArea,
+  Hidden,
 } from "@material-ui/core";
 import {
   DetailsRounded,
@@ -43,15 +45,34 @@ const PieceCard = ({
   handleDelete,
   handleDetails,
   toggleVisibility,
+  zoomIn,
+  handleZoom,
 }) => {
   const classes = useStyles();
   return (
     <Card elevation={15} className={classes.card}>
-      <CardMedia
-        className={classes.cardMedia}
-        image={piece.image_url || noImage}
-        title="Image title"
-      />
+      <Hidden only={("lg", "xl", "xs")}>
+        <CardActionArea
+          onClick={(e) => {
+            handleZoom(e, index);
+          }}
+        >
+          <CardMedia
+            className={classes.cardMedia}
+            image={piece.image_url || noImage}
+            title="Image title"
+          />
+        </CardActionArea>
+      </Hidden>
+
+      <Hidden smUp>
+        <CardMedia
+          component="img"
+          image={piece.image_url || noImage}
+          title="Image title"
+        />
+      </Hidden>
+
       <CardContent className={classes.cardContent}>
         <Typography gutterBottom variant="h5" component="h2">
           {piece.title}

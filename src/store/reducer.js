@@ -41,7 +41,6 @@ const reducer = (state = reduxState, action) => {
       };
     }
     case actionTypes.START_CRUD: {
-      console.log("Start Crud");
       return { ...state, loading: true };
     }
     case actionTypes.LIS_FAIL: {

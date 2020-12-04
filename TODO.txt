@@ -1,7 +1,11 @@
 - Arreglar botones del siddrawer para version movil (listo)
-- Fix footer position(listo)
 
 - Hacer la paginación Lazy o añadir filtrado por campos en client siddrawer
-- Llenar el footer con algo
+
+
 - Trabajar en la optimización de imágenes.
+    * para vista galeria,detalles,Crud 600px largo 
+    * original para vista ampliada al darle click en la imagen en galeria
+
+
 - Manejo de errores y sync con la nube mediante los sackbar

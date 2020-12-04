@@ -13,12 +13,14 @@ import CloudUploadIcon from "@material-ui/icons/CloudUpload";
 
 const useStyles = makeStyles((theme) => ({
   card: {
-    height: "50%",
+    height: "100%",
     display: "flex",
     flexDirection: "column",
   },
   cardMedia: {
-    paddingTop: "56.25%", // 16:9
+    // paddingTop: "1%",
+    // paddingBottom: "1%",
+    // paddingTop: "56.25%", // 16:9
   },
 }));
 
@@ -27,7 +29,12 @@ const UploadPhoto = (props) => {
 
   return (
     <Card className={classes.card}>
-      <CardMedia className={classes.cardMedia} image={props.photo}></CardMedia>
+      <CardMedia
+        className={classes.cardMedia}
+        component="img"
+        image={props.photo}
+        classes={{}}
+      ></CardMedia>
 
       <CardActions>
         <Grid

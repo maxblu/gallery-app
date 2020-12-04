@@ -5,7 +5,8 @@ import { storage } from "../../firebase/firebase";
 import axios from "../../axios-orders";
 
 import { Container, Grid, TextField, Paper, Button } from "@material-ui/core";
-import CircularProgress from "@material-ui/core/CircularProgress";
+import Resizer from "react-image-file-resizer";
+
 import { DatePicker } from "@material-ui/pickers";
 import UploadPhoto from "../../commponents/UploadPhoto/UploadPhoto";
 import noImage from "../../assets/images/noImage.png";
@@ -53,7 +54,6 @@ const CreatePieceForm = (props) => {
   // const [changedPhoto, setchangedPhoto] = useState(false);
   const loading = useSelector((state) => state.loading);
 
-  console.log(piece);
   // useEffect(() => {
   //   setPiece({ ...props.location.state.piece });
   // }, []);
@@ -74,12 +74,29 @@ const CreatePieceForm = (props) => {
     }
   }, []);
 
-  const handleUploadPhoto = (e) => {
-    console.log(e.target.files);
+  const resizeFile = (file) =>
+    new Promise((resolve) => {
+      Resizer.imageFileResizer(
+        file,
+        1000,
+        Math.floor(1000 * 0.5625),
+        "JPEG",
+        90,
+        0,
+        (uri) => {
+          resolve(uri);
+        },
+        "blob"
+      );
+    });
+
+  const handleUploadPhoto = async (e) => {
     if (e.target.files.length) {
+      const image = await resizeFile(e.target.files[0]);
+
       setPhoto({
-        preview: URL.createObjectURL(e.target.files[0]),
-        raw: e.target.files[0],
+        preview: URL.createObjectURL(image),
+        raw: { file: image, name: e.target.files[0].name },
         changedPhoto: true,
       });
     }

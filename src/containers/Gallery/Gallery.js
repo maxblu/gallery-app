@@ -30,7 +30,7 @@ import Spinner from "../../commponents/Spinner/Spinner";
 
 import PieceCard from "../../commponents/PieceCard/PieceCard";
 import { ArrowBack, ArrowBackIos, ArrowForwardIos } from "@material-ui/icons";
-import { Snackbar } from "@material-ui/core";
+import { Backdrop, Snackbar } from "@material-ui/core";
 
 const useStyles = makeStyles((theme) => ({
   icon: {
@@ -70,6 +70,7 @@ const useStyles = makeStyles((theme) => ({
 const piece = {
   title: "",
   image_url: null,
+  thumnail: null,
 
   author: "",
   tec: "",
@@ -89,6 +90,7 @@ const Gallery = (props) => {
   const classes = useStyles();
   const [currentPage, setCurrentPage] = useState(1);
   const [currentStartIndex, setCurrentStartIndex] = useState(0);
+  const [zoomIn, setZoomIn] = useState({ zoom: false, index: null });
   // const [isAuth, setIsAuth] = useState(false);
 
   //   const [isAdminPage, setisAdminPage] = useState();
@@ -100,12 +102,9 @@ const Gallery = (props) => {
   const numberOfPages = Math.ceil(pieces.length / ITEM_PER_PAGE);
 
   const dispatch = useDispatch();
-  let pieces_for_visitors = null;
 
   useEffect(() => {
-    console.log("llame");
     if (isAuth) {
-      console.log("LISTANDO");
       dispatch(actions.getPieces("admin"));
     } else {
       dispatch(actions.getPieces("user"));
@@ -114,20 +113,7 @@ const Gallery = (props) => {
     }
   }, [isAuth]);
 
-  // useEffect(() => {
-  //   if (!isAuth){
-  //     for(let item in pieces){
-  //       if (item.visible)
-  //       pieces_for_visitors.push(item)
-  //     }
-
-  //   }
-
-  // }, [isAuth]);
-
-  console.log(pieces);
   const handlePrevNext = (e, id) => {
-    console.log(currentPage);
     if (id === "next" && currentPage + 1 <= numberOfPages) {
       setCurrentStartIndex(currentStartIndex + ITEM_PER_PAGE);
       setCurrentPage(currentPage + 1);
@@ -171,10 +157,18 @@ const Gallery = (props) => {
     props.history.push("/details", { piece: pieces[index] });
   };
 
+  const handleZoom = (e, index) => {
+    setZoomIn({ zoom: true, index: index });
+    handleDetails(e, index);
+  };
+  // const toogleZoom = () => {
+  //   setZoomIn({ zoom: false, index: null });
+  // };
+
   return (
     <React.Fragment>
       <CssBaseline />
-      <div className={classes.welcomeContent}>
+      <div>
         {!loading ? (
           <Container maxWidth="sm">
             <Typography
@@ -192,7 +186,7 @@ const Gallery = (props) => {
               color="textSecondary"
               paragraph
             >
-              Bienvenidos a nuestra galeria donde encontrará lo que busca.
+              Bienvenidos a nuestra galería donde encontrará lo que busca.
             </Typography>
             <div className={classes.filterBottons}>
               <Grid container spacing={2} justify="center">
@@ -220,7 +214,6 @@ const Gallery = (props) => {
         )}
       </div>
       <Container className={classes.cardGrid} maxWidth="md">
-        {/* End hero unit */}
         <Grid container spacing={4}>
           {pieces
             .slice(currentStartIndex, currentStartIndex + ITEM_PER_PAGE)
@@ -235,11 +228,14 @@ const Gallery = (props) => {
                   handleDetails={handleDetails}
                   toggleVisibility={toggleVisibility}
                   showAdminActions={isAuth}
+                  zoomIn={zoomIn}
+                  handleZoom={handleZoom}
                 />
               </Grid>
             ))}
         </Grid>
       </Container>
+
       {numberOfPages > 1 ? (
         <Grid
           container
@@ -269,7 +265,6 @@ const Gallery = (props) => {
           ) : null}
         </Grid>
       ) : null}
-
       {/* <Snackbar open={loading} autoHideDuration={6000}>
         <Alert severity="success">Base de Datos sincrinizada</Alert>
       </Snackbar> */}

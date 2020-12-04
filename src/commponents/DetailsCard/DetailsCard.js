@@ -31,7 +31,7 @@ const useStyles = makeStyles((theme) => ({
     flexDirection: "column",
   },
   cardMedia: {
-    paddingTop: "56.25%", // 16:9
+    // paddingTop: "56.25%", // 16:9
   },
 }));
 
@@ -62,7 +62,7 @@ const DetailsCard = (props) => {
   return (
     <React.Fragment>
       <CssBaseline />
-      <Container maxWidth="md">
+      <Container maxWidth="sm">
         {/* <Paper elevation={16}> */}
         <Card className={classes.card} elevation={16}>
           <CardHeader
@@ -71,6 +71,7 @@ const DetailsCard = (props) => {
           />
           <CardMedia
             className={classes.cardMedia}
+            component="img"
             image={piece.image_url || noPhoto}
             title={piece.title}
           />
@@ -111,32 +112,34 @@ const DetailsCard = (props) => {
                 </Grid>
               )}
 
-              <Grid item xs={12}>
-                <Accordion elevation={0}>
-                  <AccordionSummary expandIcon={<ExpandMore />}>
-                    <Typography variant="h5">Premios:</Typography>
-                  </AccordionSummary>
-                  <AccordionDetails>
-                    <Grid
-                      container
-                      direction="column"
-                      alignContent="center"
-                      alignItems="center"
-                      justify="center"
-                    >
-                      {piece.awards.split(",").map((award) => {
-                        return (
-                          <Grid item xs={12}>
-                            <ListItem>
-                              <Typography variant="h6"> {award}</Typography>
-                            </ListItem>
-                          </Grid>
-                        );
-                      })}
-                    </Grid>
-                  </AccordionDetails>
-                </Accordion>
-              </Grid>
+              {piece.awards && (
+                <Grid item xs={12}>
+                  <Accordion elevation={0}>
+                    <AccordionSummary expandIcon={<ExpandMore />}>
+                      <Typography variant="h5">Premios:</Typography>
+                    </AccordionSummary>
+                    <AccordionDetails>
+                      <Grid
+                        container
+                        direction="column"
+                        alignContent="center"
+                        alignItems="center"
+                        justify="center"
+                      >
+                        {piece.awards.split(",").map((award) => {
+                          return (
+                            <Grid item xs={12}>
+                              <ListItem>
+                                <Typography variant="h6"> {award}</Typography>
+                              </ListItem>
+                            </Grid>
+                          );
+                        })}
+                      </Grid>
+                    </AccordionDetails>
+                  </Accordion>
+                </Grid>
+              )}
             </Grid>
           </CardContent>
           <CardActions>

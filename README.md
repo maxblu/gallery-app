@@ -1,70 +1,53 @@
-# Getting Started with Create React App
+# Gallería Dream Solutions
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+Este proyecto está creado con React. Consiste en una galería de arte donde se pueden exponer obras de manera virtual. Tiene un panel adminsitrativo por el cual se pueden administrar las obras.[CRUD BÁSICO]
+Para el bakend fue usado firebase y su rest API para los servicios de authentificación, base de datos no relacional y almacen de archivos.
 
-## Available Scripts
+## La estructura del frontend es la siguiente:
 
-In the project directory, you can run:
+La entrada a la aplicación es por el componente APP donde mediante react - router se maneja las diferentes routas asi como su guarda en función de la authentificación.
+ 
+Los componentes en la carpeta containers manjan estados ya sea global o propios. Aquí encontramos el login, la galería en si, y el formulario que se reutiliza para las aciones de crear, modificar y eliminar una obra determinada.
 
+Los componentes en la carpeta components son state-less, no manejan estados. 
+
+Además se utilizón redux para llevar un estado global o storage. En la carpeta storage encontramos el ruducers y los actions creators(actions.js). Los actions creator son los que permiten hacer cambios en el estado global asi como correr las funciones asyncronas relacionadas con la interacción con la API del bakend. 
+
+Las interacciones HTTP se realizaron usando axios.
+
+También de manera adicional se agregó un panel de busqueda en cascada por algunos de los parámetros que tiene las obras. Se seleciona uno se hace una query se busca y sobre esos mismos resultados se puede continuar haciendo otras busquedas. Estas búsquedas son relativamente rápidas ya que se realizan en el cliente.
+
+
+## Elementos a considerar
+
+El estado actual de la aplicacíon permite facilmente un primer release. Por supuesto se pududieran mejorar muchos detalles en cuanto a estilo y además añadir nuevos features como una busqueda avanzada más especifica. Pero tal vez eso influiría en que el tiempo de publicación de un realese totalmente funcional no fuera de una semana. Estos features pueden irse incorporando a manera de se vallan desarrollando.  
+
+La elección de firebase bakend fue sustentada en el nivel de complejidad baja de la app y el objetivo de este proyecto y las especificaciones. Firebase ayuda a hacer este proceso más sencillo dado que no existe una compleja relación entre los objetos que se quieren guaradar en la base de datos en este caso solo uno. De esta forma poder obtener un release más rápido. 
+
+
+Si desea puede ver la aplicación publicada en uso en la siguiente dirección: [galeria dream solutions](https://dreamsolutionsgallery.maxblu.vercel.app/). El bakend de firebase está restringido con Cuba por lo que es necesario usar vpn sino dará network error.
+
+
+ ## Installación del Proyecto
+ 
+ Si se desea revisar el código y trabajar en futuros release solo es necesario clonar este repo y ejecutar :
+ 
+ ### `npm install`
+ 
+ y luego poner en marcha el servidor local con:
+ 
 ### `npm start`
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
+Gracias!! :)
+ 
 
-The page will reload if you make edits.\
-You will also see any lint errors in the console.
 
-### `npm test`
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
 
-### `npm run build`
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
 
-### `npm run eject`
 
-**Note: this is a one-way operation. Once you `eject`, you can’t go back!**
 
-If you aren’t satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
 
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you’re on your own.
-
-You don’t have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn’t feel obligated to use this feature. However we understand that this tool wouldn’t be useful if you couldn’t customize it when you are ready for it.
-
-## Learn More
-
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
-
-To learn React, check out the [React documentation](https://reactjs.org/).
-
-### Code Splitting
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
-
-### Analyzing the Bundle Size
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
-
-### Making a Progressive Web App
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
-
-### Advanced Configuration
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
-
-### Deployment
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
-
-### `npm run build` fails to minify
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)

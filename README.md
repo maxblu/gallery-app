@@ -22,6 +22,9 @@ También de manera adicional se agregó un panel de busqueda en cascada por algu
 
 El estado actual de la aplicacíon permite facilmente un primer release. Por supuesto se pududieran mejorar muchos detalles en cuanto a estilo y además añadir nuevos features como una busqueda avanzada más especifica. Pero tal vez eso influiría en que el tiempo de publicación de un realese totalmente funcional no fuera de una semana. Estos features pueden irse incorporando a manera de se vallan desarrollando.  
 
+La elección de firebase bakend fue sustentada en el nivel de complejidad baja de la app y el objetivo de este proyecto y las especificaciones. Firebase ayuda a hacer este proceso más sencillo dado que no existe una compleja relación entre los objetos que se quieren guaradar en la base de datos en este caso solo uno. De esta forma poder obtener un release más rápido. 
+
+
 Si desea puede ver la aplicación publicada en uso en la siguiente dirección: [galeria dream solutions](https://dreamsolutionsgallery.maxblu.vercel.app/). El bakend de firebase está restringido con Cuba por lo que es necesario usar vpn sino dará network error.
 
 

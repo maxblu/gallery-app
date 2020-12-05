@@ -1,35 +1,21 @@
 import React, { useState, useEffect } from "react";
+import { shallowEqual, useDispatch, useSelector } from "react-redux";
 
-import Button from "@material-ui/core/Button";
-
-import CssBaseline from "@material-ui/core/CssBaseline";
-import Grid from "@material-ui/core/Grid";
-import Typography from "@material-ui/core/Typography";
 import {
   makeStyles,
-  TextField,
-  FormControlLabel,
-  RadioGroup,
-  Radio,
+  Typography,
+  Grid,
+  CssBaseline,
+  Button,
+  Container,
 } from "@material-ui/core";
-import Container from "@material-ui/core/Container";
-
 import Pagination from "@material-ui/lab/Pagination";
 
-import IconButton from "@material-ui/core/IconButton";
-
-import * as actions from "../../store/actions";
-// import axios from "../../axios-orders";
-
-import { shallowEqual, useDispatch, useSelector } from "react-redux";
 import Spinner from "../../commponents/Spinner/Spinner";
-// import DetailsCard from "../../commponents/DetailsCard/DetailsCard";
-
-import PieceCard from "../../commponents/PieceCard/PieceCard";
-import { Search } from "@material-ui/icons";
 import ErrorHandler from "../../commponents/ErrorHandler/ErrorHandler";
 import SimpleSearch from "../../commponents/SimpleSearch/SimpleSearch";
 import PiecesCards from "../../commponents/PiecesCards/PiecesCards";
+import * as actions from "../../store/actions";
 
 const useStyles = makeStyles((theme) => ({
   icon: {

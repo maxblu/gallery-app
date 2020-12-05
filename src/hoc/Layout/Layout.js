@@ -119,14 +119,14 @@ const Layout = (props) => {
             Administración
           </NavigationItem>
         </Grid>
-        <Grid item xs={12} style={{}}>
+        {/* <Grid item xs={12} style={{}}>
           <NavigationItem
             sideDrawerHandler={sideDrawerClosedHandler}
             link="/admin"
           >
             Salir
           </NavigationItem>
-        </Grid>
+        </Grid> */}
       </Grid>
     );
   }

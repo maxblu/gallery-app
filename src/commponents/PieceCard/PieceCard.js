@@ -1,4 +1,4 @@
-import React from "react";
+import React, { memo } from "react";
 import {
   Card,
   CardMedia,
@@ -49,6 +49,9 @@ const PieceCard = ({
   handleZoom,
 }) => {
   const classes = useStyles();
+
+  console.log("redender");
+
   return (
     <Card elevation={15} className={classes.card}>
       <Hidden only={("lg", "xl", "xs")}>
@@ -60,7 +63,7 @@ const PieceCard = ({
           <CardMedia
             className={classes.cardMedia}
             image={piece.image_url || noImage}
-            title="Image title"
+            title={piece.title || "no title"}
           />
         </CardActionArea>
       </Hidden>

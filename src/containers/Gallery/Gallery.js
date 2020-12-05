@@ -28,6 +28,8 @@ import Spinner from "../../commponents/Spinner/Spinner";
 import PieceCard from "../../commponents/PieceCard/PieceCard";
 import { Search } from "@material-ui/icons";
 import ErrorHandler from "../../commponents/ErrorHandler/ErrorHandler";
+import SimpleSearch from "../../commponents/SimpleSearch/SimpleSearch";
+import PiecesCards from "../../commponents/PiecesCards/PiecesCards";
 
 const useStyles = makeStyles((theme) => ({
   icon: {
@@ -198,83 +200,13 @@ const Gallery = (props) => {
             >
               Bienvenidos a nuestra galería.
             </Typography>
-
-            <Grid
-              container
-              justify="center"
-              alignItems="center"
-              alignContent="center"
-            >
-              <Grid item xs={7} md sm lg xl>
-                <form onSubmit={handleSearch}>
-                  <Grid
-                    container
-                    justify="center"
-                    alignItems="center"
-                    alignContent="center"
-                  >
-                    <Grid item xs={11} md={11} sm={11} lg={11} xl={11}>
-                      <TextField
-                        size="small"
-                        fullWidth
-                        type="text"
-                        placeholder="Buscar"
-                        variant="outlined"
-                        value={searchQuery}
-                        onChange={(e) => {
-                          setSearchQuery(e.target.value);
-                        }}
-                      />
-                    </Grid>
-                    <Grid item xs={1} sm={1} md={1} lg={1} xl={1}>
-                      <IconButton type="submit">
-                        <Search color="primary" />
-                      </IconButton>
-                    </Grid>
-                  </Grid>
-                </form>
-              </Grid>
-              <Grid item xs={12}>
-                <RadioGroup
-                  name="SearchParam"
-                  value={serchParam}
-                  onChange={(e) => {
-                    setSerchParam(e.target.value);
-                  }}
-                  // onChange={(e)=>{setSerchParam(e.target.value)})}
-                >
-                  <Grid
-                    container
-                    justify="center"
-                    alignItems="center"
-                    alignContent="center"
-                  >
-                    <Grid item xs={12}>
-                      <FormControlLabel
-                        value={"title"}
-                        control={<Radio color="primary" />}
-                        label="Título"
-                      />
-                      <FormControlLabel
-                        value="author"
-                        control={<Radio color="primary" />}
-                        label="Autor"
-                      />
-                      <FormControlLabel
-                        value="manif"
-                        control={<Radio color="primary" />}
-                        label="Manifestación"
-                      />
-                      <FormControlLabel
-                        value="tec"
-                        control={<Radio color="primary" />}
-                        label="Técnica"
-                      />
-                    </Grid>
-                  </Grid>
-                </RadioGroup>
-              </Grid>
-            </Grid>
+            <SimpleSearch
+              handleSearch={handleSearch}
+              searchQuery={searchQuery}
+              setSearchQuery={setSearchQuery}
+              serchParam={serchParam}
+              setSerchParam={setSerchParam}
+            />
 
             <Grid
               container
@@ -299,34 +231,28 @@ const Gallery = (props) => {
           <Spinner />
         )}
       </div>
+
       <Grid container justify="center">
         {serverError && (
           <ErrorHandler error={serverError.message} close={closeAlert} />
         )}
       </Grid>
+      <PiecesCards
+        pieces={pieces}
+        isAuth={isAuth}
+        currentStartIndex={currentStartIndex}
+        item_per_page={item_per_page}
+        piece={piece}
+        handleCreate={handleCreate}
+        handleEdit={handleEdit}
+        handleDelete={handleDelete}
+        handleDetails={handleDetails}
+        toggleVisibility={toggleVisibility}
+        showAdminActions={isAuth}
+        zoomIn={zoomIn}
+        handleZoom={handleZoom}
+      />
 
-      <Container className={classes.cardGrid} maxWidth="md">
-        <Grid container spacing={4}>
-          {pieces
-            .slice(currentStartIndex, currentStartIndex + item_per_page)
-            .map((piece, index) => (
-              <Grid item key={piece.id} xs={12} sm={6} md={4}>
-                <PieceCard
-                  piece={piece}
-                  index={index + currentStartIndex}
-                  handleCreate={handleCreate}
-                  handleEdit={handleEdit}
-                  handleDelete={handleDelete}
-                  handleDetails={handleDetails}
-                  toggleVisibility={toggleVisibility}
-                  showAdminActions={isAuth}
-                  zoomIn={zoomIn}
-                  handleZoom={handleZoom}
-                />
-              </Grid>
-            ))}
-        </Grid>
-      </Container>
       <Grid
         container
         direction="row"

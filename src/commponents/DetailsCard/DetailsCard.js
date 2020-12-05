@@ -71,7 +71,7 @@ const DetailsCard = (props) => {
             className={classes.cardMedia}
             component="img"
             image={piece.image_url || noPhoto}
-            title={piece.title}
+            title={piece.title || "no title"}
           />
           <CardContent>
             <Grid

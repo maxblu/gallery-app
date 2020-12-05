@@ -23,7 +23,7 @@ import noPhoto from "../../assets/images/noImage.png";
 
 const useStyles = makeStyles((theme) => ({
   card: {
-    margin: "20px",
+    margin: "60px",
     height: "20%",
     display: "flex",
     flexDirection: "column",
@@ -84,7 +84,7 @@ const DetailsCard = (props) => {
             >
               <Grid item xs={12}>
                 {piece.manif && (
-                  <Typography variant="h5">
+                  <Typography variant="h6">
                     {"Manifestación: " + piece.manif}
                   </Typography>
                 )}
@@ -92,19 +92,19 @@ const DetailsCard = (props) => {
 
               {piece.tec && (
                 <Grid item xs={12}>
-                  <Typography variant="h5">
+                  <Typography variant="h6">
                     {"Técnica: " + piece.tec}
                   </Typography>
                 </Grid>
               )}
               {piece.price > 0 && (
                 <Grid item xs={12}>
-                  <Typography variant="h5">Precio: ${piece.price}</Typography>
+                  <Typography variant="h6">Precio: ${piece.price}</Typography>
                 </Grid>
               )}
               {piece.year && (
                 <Grid item xs={12}>
-                  <Typography variant="h5">
+                  <Typography variant="h6">
                     {"Año: " + new Date(piece.year).getFullYear()}
                   </Typography>
                 </Grid>

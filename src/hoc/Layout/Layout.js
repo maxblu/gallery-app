@@ -140,6 +140,7 @@ const Layout = (props) => {
             show={sideDrawerOpendHandler}
             logout={handleLogOut}
             isAuth={isAuth}
+            // link={title === "Panel de Administración" ? "/admin" : "/home"}
             loginButtonHandler={handleLoging}
           ></Toolbar>
         </Grid>

@@ -322,7 +322,6 @@ export const deleteOldOne = (imageRef) => {
 export const searchPieces = (pieces, value, searchParam) => {
   return (dispatch) => {
     const result = [];
-    console.log(value);
 
     for (let key in pieces) {
       if (

@@ -14,6 +14,8 @@ import { makeStyles } from "@material-ui/core/styles";
 // import SideNavigationItems from "../SideNavigationsItems/SideNavigationsItems";
 import { fade } from "@material-ui/core/styles/colorManipulator";
 import ExitToAppIcon from "@material-ui/icons/ExitToApp";
+import { Button } from "@material-ui/core";
+import NavigationItem from "../NavigationItem/NavigationItem";
 // import { Hidden } from "@material-ui/core";
 
 const useStyles = makeStyles((theme) => ({
@@ -78,7 +80,7 @@ const Mytoolbar = (props) => {
           <MenuIcon />
         </IconButton>
         <Typography variant="h6" className={classes.title}>
-          {props.title}
+          <NavigationItem link="/">{props.title}</NavigationItem>
         </Typography>
         {authIconButton}
       </Toolbar>

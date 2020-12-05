@@ -1,8 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { makeStyles } from "@material-ui/core/styles";
 import CssBaseline from "@material-ui/core/CssBaseline";
-import { storage } from "../../firebase/firebase";
-import axios from "../../axios-orders";
 
 import { Container, Grid, TextField, Paper, Button } from "@material-ui/core";
 import Resizer from "react-image-file-resizer";
@@ -119,8 +117,13 @@ const CreatePieceForm = (props) => {
     let data = null;
 
     if (photo.changedPhoto && props.location.action !== "DEL") {
-      const imageUrl = await actions.handlePhotoStorage(piece.image_url, photo);
-      data = { ...piece, image_url: imageUrl };
+      let imageUrl = null;
+      try {
+        imageUrl = await actions.handlePhotoStorage(piece.image_url, photo);
+        data = { ...piece, image_url: imageUrl };
+      } catch (e) {
+        dispatch(actions.crudFail(e));
+      }
     } else {
       data = { ...piece };
     }

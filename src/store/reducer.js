@@ -17,6 +17,18 @@ const reducer = (state = reduxState, action) => {
         loading: true,
       };
     }
+    case actionTypes.CLE: {
+      return {
+        ...state,
+        error: null,
+      };
+    }
+    case actionTypes.CRUDFAIL: {
+      return {
+        ...state,
+        error: action.error,
+      };
+    }
     case actionTypes.AUTH_FAIL: {
       return {
         ...state,

@@ -13,13 +13,8 @@ import {
   Radio,
 } from "@material-ui/core";
 import Container from "@material-ui/core/Container";
-import MuiAlert from "@material-ui/lab/Alert";
-import Pagination from "@material-ui/lab/Pagination";
 
-import Backdrop from "@material-ui/core/Backdrop";
-import SpeedDial from "@material-ui/lab/SpeedDial";
-import SpeedDialIcon from "@material-ui/lab/SpeedDialIcon";
-import SpeedDialAction from "@material-ui/lab/SpeedDialAction";
+import Pagination from "@material-ui/lab/Pagination";
 
 import IconButton from "@material-ui/core/IconButton";
 
@@ -32,6 +27,7 @@ import Spinner from "../../commponents/Spinner/Spinner";
 
 import PieceCard from "../../commponents/PieceCard/PieceCard";
 import { Search } from "@material-ui/icons";
+import ErrorHandler from "../../commponents/ErrorHandler/ErrorHandler";
 
 const useStyles = makeStyles((theme) => ({
   icon: {
@@ -82,10 +78,6 @@ const piece = {
   visible: true,
 };
 
-function Alert(props) {
-  return <MuiAlert elevation={6} variant="filled" {...props} />;
-}
-
 const Gallery = (props) => {
   const classes = useStyles();
   const [currentPage, setCurrentPage] = useState(1);
@@ -97,6 +89,7 @@ const Gallery = (props) => {
   const pieces = useSelector((state) => state.pieces, shallowEqual);
   const isAuth = useSelector((state) => state.token, shallowEqual);
   const loading = useSelector((state) => state.loading, shallowEqual);
+  const serverError = useSelector((state) => state.error, shallowEqual);
   const loadingVisibility = useSelector((state) => state.loadingVisibility);
   const [item_per_page, setItem_per_page] = useState(3);
   const [searchQuery, setSearchQuery] = useState("");
@@ -124,6 +117,8 @@ const Gallery = (props) => {
       setCurrentPage(1);
       setCurrentStartIndex(0);
     }
+
+    window.scrollTo(0, 200);
   }, [isAuth]);
 
   const handlePrevNext = (e, value) => {
@@ -176,21 +171,9 @@ const Gallery = (props) => {
     dispatch(actions.searchPieces(pieces, searchQuery, serchParam));
   };
 
-  // const cleanSearch = () => {
-  //   dispatch(actions.startCRUD);
-
-  //   if (isAuth) {
-  //     dispatch(actions.getPieces("admin"));
-  //   } else {
-  //     dispatch(actions.getPieces("user"));
-  //     setCurrentPage(1);
-  //     setCurrentStartIndex(0);
-  //   }
-  // };
-
-  // const toogleZoom = () => {
-  //   setZoomIn({ zoom: false, index: null });
-  // };
+  const closeAlert = () => {
+    dispatch(actions.cleanError());
+  };
 
   return (
     <React.Fragment>
@@ -213,7 +196,7 @@ const Gallery = (props) => {
               color="textSecondary"
               paragraph
             >
-              Bienvenidos a nuestra galería donde encontrará lo que busca.
+              Bienvenidos a nuestra galería.
             </Typography>
 
             <Grid
@@ -241,7 +224,6 @@ const Gallery = (props) => {
                         onChange={(e) => {
                           setSearchQuery(e.target.value);
                         }}
-                        onCk
                       />
                     </Grid>
                     <Grid item xs={1} sm={1} md={1} lg={1} xl={1}>
@@ -262,6 +244,7 @@ const Gallery = (props) => {
                   // onChange={(e)=>{setSerchParam(e.target.value)})}
                 >
                   <Grid
+                    container
                     justify="center"
                     alignItems="center"
                     alignContent="center"
@@ -316,6 +299,12 @@ const Gallery = (props) => {
           <Spinner />
         )}
       </div>
+      <Grid container justify="center">
+        {serverError && (
+          <ErrorHandler error={serverError.message} close={closeAlert} />
+        )}
+      </Grid>
+
       <Container className={classes.cardGrid} maxWidth="md">
         <Grid container spacing={4}>
           {pieces

@@ -13,6 +13,10 @@ export const CHV = "START_CHV";
 
 export const SERCH = "SERCH";
 
+export const CLE = "CLE";
+
+export const CRUDFAIL = "CRUDFAIL";
+
 export const AUTH_START = "AUTH_START";
 export const AUTH_SUCCESS = "AUTH_SUCCESS";
 export const AUTH_FAIL = "AUTH_FAIL";
@@ -68,6 +72,13 @@ export const startCRUD = () => {
   };
 };
 
+export const crudFail = (error) => {
+  return {
+    type: CRUDFAIL,
+    error: error,
+  };
+};
+
 export const startCHAV = () => {
   return {
     type: CHV,
@@ -115,6 +126,12 @@ export const delet = (index) => {
   return {
     type: DEL,
     index: index,
+  };
+};
+
+export const cleanError = () => {
+  return {
+    type: CLE,
   };
 };
 
@@ -212,7 +229,7 @@ export const updatePiece = (piece, index, token) => {
         dispatch(update(piece, index));
       })
       .catch((erro) => {
-        console.log(erro);
+        dispatch(crudFail(erro));
       });
   };
 };
@@ -223,9 +240,10 @@ export const updatePartialPiece = (id, data, index, token) => {
     axios
       .patch("/pieces/" + id + ".json?auth=" + token, data)
       .then((resp) => {})
-      .catch((err) => {
-        console.log(err);
+      .catch((erro) => {
+        // console.log(err);
         dispatch(updatePartial(!data.visible, index));
+        dispatch(crudFail(erro));
       });
   };
 };
@@ -237,8 +255,8 @@ export const createPiece = (piece, token) => {
       .then((resp) => {
         dispatch(create(piece));
       })
-      .catch((err) => {
-        console.log(err);
+      .catch((erro) => {
+        dispatch(crudFail(erro));
       });
   };
 };
@@ -253,8 +271,8 @@ export const deletePiece = (piece, index, token) => {
       .then((resp) => {
         dispatch(delet(index));
       })
-      .catch((err) => {
-        console.log(err);
+      .catch((erro) => {
+        dispatch(crudFail(erro));
       });
   };
 };

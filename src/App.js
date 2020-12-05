@@ -1,12 +1,12 @@
 import "./App.css";
-import React, { useEffect, useState } from "react";
+import React, { useEffect } from "react";
 import Layout from "./hoc/Layout/Layout";
 import { Switch, Route, Redirect } from "react-router-dom";
 import Gallery from "./containers/Gallery/Gallery";
 import LogIn from "./containers/LogIn/LogIn";
 import CreatePieceForm from "./containers/CreatePieceForm/CreatePieceForm";
 import { shallowEqual, useDispatch, useSelector } from "react-redux";
-import { authCheckState, getPieces } from "./store/actions";
+import { authCheckState } from "./store/actions";
 import DateFnsUtils from "@date-io/date-fns";
 import { MuiPickersUtilsProvider } from "@material-ui/pickers";
 import DetailsCard from "./commponents/DetailsCard/DetailsCard";

@@ -37,6 +37,8 @@ Si desea puede ver la aplicación publicada en uso en la siguiente dirección: [
  y luego poner en marcha el servidor local con:
  
 ### `npm start`
+
+Gracias!! :)
  
 
 

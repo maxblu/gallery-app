@@ -195,7 +195,7 @@ const Gallery = (props) => {
   return (
     <React.Fragment>
       <CssBaseline />
-      <div>
+      <div className={classes.welcomeContent}>
         {!loading ? (
           <Container maxWidth="sm">
             <Typography

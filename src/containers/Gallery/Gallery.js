@@ -169,7 +169,6 @@ const Gallery = (props) => {
 
     dispatch(actions.startCRUD);
 
-    // if (searchQuery) {
     dispatch(actions.searchPieces(pieces, searchQuery, serchParam));
   };
 

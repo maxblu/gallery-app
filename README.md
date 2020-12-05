@@ -1,21 +1,21 @@
 # Gallería Dream Solutions
 
-Este proyecto está creado con React. Consiste en una galería de arte donde se pueden exponer obras de manera virtual. Tiene cun panel adminsitrativo por el cual se pueden administrar las obras.[CRUD BÁSICO]
+Este proyecto está creado con React. Consiste en una galería de arte donde se pueden exponer obras de manera virtual. Tiene un panel adminsitrativo por el cual se pueden administrar las obras.[CRUD BÁSICO]
 Para el bakend fue usado firebase y su rest API para los servicios de authentificación, base de datos no relacional y almacen de archivos.
 
 ## La estructura del frontend es la siguiente:
 
-La entrada a la aplicación es por el componente APP donde mediante react - router se maneja las diferentes routas asi como su guarda en funcíon de la authentificación.
+La entrada a la aplicación es por el componente APP donde mediante react - router se maneja las diferentes routas asi como su guarda en función de la authentificación.
  
-Los componentes en la carpeta containers manjan stados ya sea global o propios. Aquí encontramos el login, la galería en si, y el formulario que se reutiliza para las aciones de crear, modificar y eliminar una obra determinada.
+Los componentes en la carpeta containers manjan estados ya sea global o propios. Aquí encontramos el login, la galería en si, y el formulario que se reutiliza para las aciones de crear, modificar y eliminar una obra determinada.
 
 Los componentes en la carpeta components son state-less, no manejan estados. 
 
-Además se utilizón redux para llevar un estado global o storage. En la carpeta storage encontramos el rudcers y los actions creators(actions.js). Los actions creator son los que permiten hacer cambios en el estado global asi como correr las funciones asyncronas relacionadas con la interacción con la API del bakend. 
+Además se utilizón redux para llevar un estado global o storage. En la carpeta storage encontramos el ruducers y los actions creators(actions.js). Los actions creator son los que permiten hacer cambios en el estado global asi como correr las funciones asyncronas relacionadas con la interacción con la API del bakend. 
 
 Las interacciones HTTP se realizaron usando axios.
 
-También de manera adicional se agregó un panel de busqueda en cascada por algunos de los parámetros que tiene las obras. Se selciona uno se hace una query se busca y sobre esos mismos resultados se puede continuar haciendo otras busquedas. Estas búsquedas son relativamente rapidas ya que se realizan en el cliente.
+También de manera adicional se agregó un panel de busqueda en cascada por algunos de los parámetros que tiene las obras. Se seleciona uno se hace una query se busca y sobre esos mismos resultados se puede continuar haciendo otras busquedas. Estas búsquedas son relativamente rápidas ya que se realizan en el cliente.
 
 
 ## Elementos a considerar

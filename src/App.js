@@ -10,6 +10,7 @@ import { authCheckState, getPieces } from "./store/actions";
 import DateFnsUtils from "@date-io/date-fns";
 import { MuiPickersUtilsProvider } from "@material-ui/pickers";
 import DetailsCard from "./commponents/DetailsCard/DetailsCard";
+import SearchForm from "./containers/SearchForm/SearchForm";
 
 function App() {
   const dispatch = useDispatch();
@@ -36,6 +37,7 @@ function App() {
     routes = (
       <Switch>
         <Route path="/home" component={Gallery} />
+        <Route path="/search" component={SearchForm}></Route>
         <Route path="/login" component={LogIn} />
         <Route path="/details" component={DetailsCard} />
         <Redirect from="/" to="/home" />

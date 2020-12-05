@@ -277,7 +277,7 @@ const CreatePieceForm = (props) => {
                 xl={12}
                 style={{ marginTop: "10%" }}
               >
-                <Button type="summit" color={color} variant="contained">
+                <Button type="submit" color={color} variant="contained">
                   {button_label}
                 </Button>
               </Grid>

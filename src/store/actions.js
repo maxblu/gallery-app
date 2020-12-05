@@ -11,6 +11,8 @@ export const LIS_FAIL = "LIST_FAIL";
 export const START_CRUD = "START_CRUD";
 export const CHV = "START_CHV";
 
+export const SERCH = "SERCH";
+
 export const AUTH_START = "AUTH_START";
 export const AUTH_SUCCESS = "AUTH_SUCCESS";
 export const AUTH_FAIL = "AUTH_FAIL";
@@ -36,6 +38,13 @@ export const logout = () => {
 export const authStart = () => {
   return {
     type: AUTH_START,
+  };
+};
+
+export const searchFin = (pieces) => {
+  return {
+    type: SERCH,
+    result: pieces,
   };
 };
 
@@ -308,4 +317,21 @@ export const deleteOldOne = (imageRef) => {
     .delete()
     .then((resp) => {})
     .catch((err) => {});
+};
+
+export const searchPieces = (pieces, value, searchParam) => {
+  return (dispatch) => {
+    const result = [];
+    console.log(value);
+
+    for (let key in pieces) {
+      if (
+        pieces[key][searchParam].toLowerCase().includes(value.toLowerCase())
+      ) {
+        result.push(pieces[key]);
+      }
+    }
+
+    dispatch(searchFin(result));
+  };
 };

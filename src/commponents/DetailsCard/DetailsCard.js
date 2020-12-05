@@ -8,11 +8,9 @@ import {
   Grid,
   Typography,
   Container,
-  Paper,
   CardActions,
   Button,
   Tooltip,
-  Divider,
   Accordion,
   AccordionSummary,
   AccordionDetails,
@@ -87,7 +85,7 @@ const DetailsCard = (props) => {
               <Grid item xs={12}>
                 {piece.manif && (
                   <Typography variant="h5">
-                    {"Manifestación Artística: " + piece.manif}
+                    {"Manifestación: " + piece.manif}
                   </Typography>
                 )}
               </Grid>
@@ -116,7 +114,7 @@ const DetailsCard = (props) => {
                 <Grid item xs={12}>
                   <Accordion elevation={0}>
                     <AccordionSummary expandIcon={<ExpandMore />}>
-                      <Typography variant="h5">Premios:</Typography>
+                      <Typography variant="h6">Premios:</Typography>
                     </AccordionSummary>
                     <AccordionDetails>
                       <Grid
@@ -130,7 +128,9 @@ const DetailsCard = (props) => {
                           return (
                             <Grid item xs={12}>
                               <ListItem>
-                                <Typography variant="h6"> {award}</Typography>
+                                <Typography variant="caption">
+                                  {award}
+                                </Typography>
                               </ListItem>
                             </Grid>
                           );

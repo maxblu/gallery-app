@@ -1,26 +1,28 @@
 import React, { useState, useEffect } from "react";
-import { useHistory } from "react-router-dom";
 
 import Button from "@material-ui/core/Button";
 
-import Card from "@material-ui/core/Card";
-import CardActions from "@material-ui/core/CardActions";
-import CardContent from "@material-ui/core/CardContent";
-import CardMedia from "@material-ui/core/CardMedia";
 import CssBaseline from "@material-ui/core/CssBaseline";
 import Grid from "@material-ui/core/Grid";
 import Typography from "@material-ui/core/Typography";
-import { makeStyles } from "@material-ui/core/styles";
+import {
+  makeStyles,
+  TextField,
+  FormControlLabel,
+  RadioGroup,
+  Radio,
+} from "@material-ui/core";
 import Container from "@material-ui/core/Container";
 import MuiAlert from "@material-ui/lab/Alert";
+import Pagination from "@material-ui/lab/Pagination";
 
-import Tooltip from "@material-ui/core/Tooltip";
-import DeleteIcon from "@material-ui/icons/Delete";
+import Backdrop from "@material-ui/core/Backdrop";
+import SpeedDial from "@material-ui/lab/SpeedDial";
+import SpeedDialIcon from "@material-ui/lab/SpeedDialIcon";
+import SpeedDialAction from "@material-ui/lab/SpeedDialAction";
+
 import IconButton from "@material-ui/core/IconButton";
-import EditIcon from "@material-ui/icons/Edit";
-import VisibilityOffIcon from "@material-ui/icons/VisibilityOff";
-import VisibilityIcon from "@material-ui/icons/Visibility";
-import noImage from "../../assets/images/noImage.png";
+
 import * as actions from "../../store/actions";
 // import axios from "../../axios-orders";
 
@@ -29,8 +31,7 @@ import Spinner from "../../commponents/Spinner/Spinner";
 // import DetailsCard from "../../commponents/DetailsCard/DetailsCard";
 
 import PieceCard from "../../commponents/PieceCard/PieceCard";
-import { ArrowBack, ArrowBackIos, ArrowForwardIos } from "@material-ui/icons";
-import { Backdrop, Snackbar } from "@material-ui/core";
+import { Search } from "@material-ui/icons";
 
 const useStyles = makeStyles((theme) => ({
   icon: {
@@ -80,7 +81,6 @@ const piece = {
   awards: "",
   visible: true,
 };
-const ITEM_PER_PAGE = 3;
 
 function Alert(props) {
   return <MuiAlert elevation={6} variant="filled" {...props} />;
@@ -98,10 +98,23 @@ const Gallery = (props) => {
   const isAuth = useSelector((state) => state.token, shallowEqual);
   const loading = useSelector((state) => state.loading, shallowEqual);
   const loadingVisibility = useSelector((state) => state.loadingVisibility);
+  const [item_per_page, setItem_per_page] = useState(3);
+  const [searchQuery, setSearchQuery] = useState("");
+  const [serchParam, setSerchParam] = useState("title");
 
-  const numberOfPages = Math.ceil(pieces.length / ITEM_PER_PAGE);
+  // const [result, setResult] = useState('titl');
+
+  const numberOfPages = Math.ceil(pieces.length / item_per_page);
 
   const dispatch = useDispatch();
+
+  useEffect(() => {
+    if (window.innerWidth <= 960 && window.innerWidth > 600) {
+      setItem_per_page(4);
+    } else {
+      setItem_per_page(3);
+    }
+  }, []);
 
   useEffect(() => {
     if (isAuth) {
@@ -113,18 +126,10 @@ const Gallery = (props) => {
     }
   }, [isAuth]);
 
-  const handlePrevNext = (e, id) => {
-    if (id === "next" && currentPage + 1 <= numberOfPages) {
-      setCurrentStartIndex(currentStartIndex + ITEM_PER_PAGE);
-      setCurrentPage(currentPage + 1);
-      window.scrollTo(0, 400);
-    }
-
-    if (id === "back" && currentPage - 1 > 0) {
-      setCurrentStartIndex(currentStartIndex - ITEM_PER_PAGE);
-      setCurrentPage(currentPage - 1);
-      window.scrollTo(0, 400);
-    }
+  const handlePrevNext = (e, value) => {
+    setCurrentStartIndex((value - 1) * item_per_page);
+    setCurrentPage(value);
+    window.scrollTo(0, 400);
   };
 
   const handleCreate = () => {
@@ -161,6 +166,28 @@ const Gallery = (props) => {
     setZoomIn({ zoom: true, index: index });
     handleDetails(e, index);
   };
+
+  const handleSearch = (e) => {
+    e.preventDefault();
+
+    dispatch(actions.startCRUD);
+
+    // if (searchQuery) {
+    dispatch(actions.searchPieces(pieces, searchQuery, serchParam));
+  };
+
+  // const cleanSearch = () => {
+  //   dispatch(actions.startCRUD);
+
+  //   if (isAuth) {
+  //     dispatch(actions.getPieces("admin"));
+  //   } else {
+  //     dispatch(actions.getPieces("user"));
+  //     setCurrentPage(1);
+  //     setCurrentStartIndex(0);
+  //   }
+  // };
+
   // const toogleZoom = () => {
   //   setZoomIn({ zoom: false, index: null });
   // };
@@ -188,26 +215,102 @@ const Gallery = (props) => {
             >
               Bienvenidos a nuestra galería donde encontrará lo que busca.
             </Typography>
-            <div className={classes.filterBottons}>
-              <Grid container spacing={2} justify="center">
-                <Grid item>
-                  <Button variant="contained" color="primary">
-                    Buscar
-                  </Button>
-                </Grid>
-                <Grid item>
-                  {isAuth && (
-                    <Button
-                      variant="contained"
-                      color="primary"
-                      onClick={handleCreate}
-                    >
-                      Añadir Obra
-                    </Button>
-                  )}
-                </Grid>
+
+            <Grid
+              container
+              justify="center"
+              alignItems="center"
+              alignContent="center"
+            >
+              <Grid item xs={7} md sm lg xl>
+                <form onSubmit={handleSearch}>
+                  <Grid
+                    container
+                    justify="center"
+                    alignItems="center"
+                    alignContent="center"
+                  >
+                    <Grid item xs={11} md={11} sm={11} lg={11} xl={11}>
+                      <TextField
+                        size="small"
+                        fullWidth
+                        type="text"
+                        placeholder="Buscar"
+                        variant="outlined"
+                        value={searchQuery}
+                        onChange={(e) => {
+                          setSearchQuery(e.target.value);
+                        }}
+                        onCk
+                      />
+                    </Grid>
+                    <Grid item xs={1} sm={1} md={1} lg={1} xl={1}>
+                      <IconButton type="submit">
+                        <Search color="primary" />
+                      </IconButton>
+                    </Grid>
+                  </Grid>
+                </form>
               </Grid>
-            </div>
+              <Grid item xs={12}>
+                <RadioGroup
+                  name="SearchParam"
+                  value={serchParam}
+                  onChange={(e) => {
+                    setSerchParam(e.target.value);
+                  }}
+                  // onChange={(e)=>{setSerchParam(e.target.value)})}
+                >
+                  <Grid
+                    justify="center"
+                    alignItems="center"
+                    alignContent="center"
+                  >
+                    <Grid item xs={12}>
+                      <FormControlLabel
+                        value={"title"}
+                        control={<Radio color="primary" />}
+                        label="Título"
+                      />
+                      <FormControlLabel
+                        value="author"
+                        control={<Radio color="primary" />}
+                        label="Autor"
+                      />
+                      <FormControlLabel
+                        value="manif"
+                        control={<Radio color="primary" />}
+                        label="Manifestación"
+                      />
+                      <FormControlLabel
+                        value="tec"
+                        control={<Radio color="primary" />}
+                        label="Técnica"
+                      />
+                    </Grid>
+                  </Grid>
+                </RadioGroup>
+              </Grid>
+            </Grid>
+
+            <Grid
+              container
+              justify="center"
+              alignContent="center"
+              style={{ paddingTop: "5%" }}
+            >
+              <Grid item>
+                {isAuth && (
+                  <Button
+                    variant="contained"
+                    color="primary"
+                    onClick={handleCreate}
+                  >
+                    Añadir Obra
+                  </Button>
+                )}
+              </Grid>
+            </Grid>
           </Container>
         ) : (
           <Spinner />
@@ -216,7 +319,7 @@ const Gallery = (props) => {
       <Container className={classes.cardGrid} maxWidth="md">
         <Grid container spacing={4}>
           {pieces
-            .slice(currentStartIndex, currentStartIndex + ITEM_PER_PAGE)
+            .slice(currentStartIndex, currentStartIndex + item_per_page)
             .map((piece, index) => (
               <Grid item key={piece.id} xs={12} sm={6} md={4}>
                 <PieceCard
@@ -235,39 +338,21 @@ const Gallery = (props) => {
             ))}
         </Grid>
       </Container>
-
-      {numberOfPages > 1 ? (
-        <Grid
-          container
-          direction="row"
-          justify="center"
-          alignItems="center"
-          className={classes.pagination}
-        >
-          {currentPage > 1 ? (
-            <Grid item xs={3} sm={2} md={1} lg={1} xl={1}>
-              <IconButton id="back" onClick={(e) => handlePrevNext(e, "back")}>
-                <ArrowBackIos color="primary" />
-              </IconButton>
-            </Grid>
-          ) : null}
-          <Grid item xs={3} sm={2} md={1} lg={1} xl={1}>
-            <Typography>
-              {currentPage}/{numberOfPages}
-            </Typography>
-          </Grid>
-          {currentPage < numberOfPages ? (
-            <Grid item xs={3} sm={2} md={1} lg={1} xl={1}>
-              <IconButton onClick={(e) => handlePrevNext(e, "next")}>
-                <ArrowForwardIos color="primary" />
-              </IconButton>
-            </Grid>
-          ) : null}
-        </Grid>
-      ) : null}
-      {/* <Snackbar open={loading} autoHideDuration={6000}>
-        <Alert severity="success">Base de Datos sincrinizada</Alert>
-      </Snackbar> */}
+      <Grid
+        container
+        direction="row"
+        justify="center"
+        alignItems="center"
+        className={classes.pagination}
+      >
+        <Pagination
+          count={numberOfPages}
+          color="primary"
+          page={currentPage}
+          size="medium"
+          onChange={handlePrevNext}
+        />
+      </Grid>
     </React.Fragment>
   );
 };

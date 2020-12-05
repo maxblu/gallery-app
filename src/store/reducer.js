@@ -87,6 +87,13 @@ const reducer = (state = reduxState, action) => {
         loadingVisibility: false,
       };
     }
+    case actionTypes.SERCH: {
+      return {
+        ...state,
+        pieces: action.result,
+        loading: false,
+      };
+    }
 
     default:
       return state;

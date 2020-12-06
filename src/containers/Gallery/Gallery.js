@@ -165,94 +165,98 @@ const Gallery = (props) => {
   return (
     <React.Fragment>
       <CssBaseline />
-      <div className={classes.welcomeContent}>
-        {!loading ? (
-          <Container maxWidth="sm">
-            <Typography
-              component="h1"
-              variant="h2"
-              align="center"
-              color="textPrimary"
-              gutterBottom
-            >
-              Galería Dream Solutions
-            </Typography>
-            <Typography
-              variant="h5"
-              align="center"
-              color="textSecondary"
-              paragraph
-            >
-              Bienvenidos a nuestra galería.
-            </Typography>
-            <SimpleSearch
-              handleSearch={handleSearch}
-              searchQuery={searchQuery}
-              setSearchQuery={setSearchQuery}
-              serchParam={serchParam}
-              setSerchParam={setSerchParam}
-            />
+      {!loading ? (
+        <div>
+          <div className={classes.welcomeContent}>
+            <Container maxWidth="sm">
+              <Typography
+                component="h1"
+                variant="h2"
+                align="center"
+                color="textPrimary"
+                gutterBottom
+              >
+                Galería Dream Solutions
+              </Typography>
+              <Typography
+                variant="h5"
+                align="center"
+                color="textSecondary"
+                paragraph
+              >
+                Bienvenidos a nuestra galería.
+              </Typography>
+              <SimpleSearch
+                handleSearch={handleSearch}
+                searchQuery={searchQuery}
+                setSearchQuery={setSearchQuery}
+                serchParam={serchParam}
+                setSerchParam={setSerchParam}
+              />
 
+              <Grid
+                container
+                justify="center"
+                alignContent="center"
+                style={{ paddingTop: "5%" }}
+              >
+                <Grid item>
+                  {isAuth && (
+                    <Button
+                      variant="contained"
+                      color="primary"
+                      onClick={handleCreate}
+                    >
+                      Añadir Obra
+                    </Button>
+                  )}
+                </Grid>
+              </Grid>
+            </Container>
+          </div>
+
+          <Grid container justify="center">
+            {serverError && (
+              <ErrorHandler error={serverError.message} close={closeAlert} />
+            )}
+          </Grid>
+          <PiecesCards
+            pieces={pieces}
+            isAuth={isAuth}
+            currentStartIndex={currentStartIndex}
+            item_per_page={item_per_page}
+            piece={piece}
+            handleCreate={handleCreate}
+            handleEdit={handleEdit}
+            handleDelete={handleDelete}
+            handleDetails={handleDetails}
+            toggleVisibility={toggleVisibility}
+            showAdminActions={isAuth}
+            zoomIn={zoomIn}
+            handleZoom={handleZoom}
+          />
+
+          {numberOfPages ? (
             <Grid
               container
+              direction="row"
               justify="center"
-              alignContent="center"
-              style={{ paddingTop: "5%" }}
+              alignItems="center"
+              className={classes.pagination}
             >
-              <Grid item>
-                {isAuth && (
-                  <Button
-                    variant="contained"
-                    color="primary"
-                    onClick={handleCreate}
-                  >
-                    Añadir Obra
-                  </Button>
-                )}
-              </Grid>
+              <Pagination
+                count={numberOfPages}
+                color="primary"
+                page={currentPage}
+                size="medium"
+                onChange={handlePrevNext}
+              />
             </Grid>
-          </Container>
-        ) : (
-          <Spinner />
-        )}
-      </div>
-
-      <Grid container justify="center">
-        {serverError && (
-          <ErrorHandler error={serverError.message} close={closeAlert} />
-        )}
-      </Grid>
-      <PiecesCards
-        pieces={pieces}
-        isAuth={isAuth}
-        currentStartIndex={currentStartIndex}
-        item_per_page={item_per_page}
-        piece={piece}
-        handleCreate={handleCreate}
-        handleEdit={handleEdit}
-        handleDelete={handleDelete}
-        handleDetails={handleDetails}
-        toggleVisibility={toggleVisibility}
-        showAdminActions={isAuth}
-        zoomIn={zoomIn}
-        handleZoom={handleZoom}
-      />
-
-      <Grid
-        container
-        direction="row"
-        justify="center"
-        alignItems="center"
-        className={classes.pagination}
-      >
-        <Pagination
-          count={numberOfPages}
-          color="primary"
-          page={currentPage}
-          size="medium"
-          onChange={handlePrevNext}
-        />
-      </Grid>
+          ) : null}
+        </div>
+      ) : (
+        <Spinner />
+      )}
     </React.Fragment>
   );
 };

@@ -11,7 +11,7 @@ Los componentes en la carpeta containers manjan estados ya sea global o propios.
 
 Los componentes en la carpeta components son state-less, no manejan estados. 
 
-Además se utilizón redux para llevar un estado global o storage. En la carpeta storage encontramos el ruducers y los actions creators(actions.js). Los actions creator son los que permiten hacer cambios en el estado global asi como correr las funciones asyncronas relacionadas con la interacción con la API del bakend. 
+Además se utilizó redux para llevar un estado global o storage. En la carpeta storage encontramos el reducers y los actions creators(actions.js). Los actions creator son los que permiten hacer cambios en el estado global asi como correr las funciones asyncronas relacionadas con la interacción con la API del bakend. En el reducer se manejan las acciones despachadas en los actions creators. El reducer siempre devuleve un estado, el estado global y maneja sus cambios dada la información que proviene de los actions. 
 
 Las interacciones HTTP se realizaron usando axios.
 
@@ -20,9 +20,9 @@ También de manera adicional se agregó un panel de busqueda en cascada por algu
 
 ## Elementos a considerar
 
-El estado actual de la aplicacíon permite facilmente un primer release. Por supuesto se pududieran mejorar muchos detalles en cuanto a estilo y además añadir nuevos features como una busqueda avanzada más especifica. Pero tal vez eso influiría en que el tiempo de publicación de un realese totalmente funcional no fuera de una semana. Estos features pueden irse incorporando a manera de se vallan desarrollando.  
+El estado actual de la aplicacíon permite facilmente un primer release. Por supuesto se pududieran mejorar muchos detalles en cuanto a estilo y además añadir nuevos features como una busqueda avanzada más especifica. Estos features pueden irse incorporando a manera de se vallan desarrollando.  
 
-La elección de firebase bakend fue sustentada en el nivel de complejidad baja de la app y el objetivo de este proyecto y las especificaciones. Firebase ayuda a hacer este proceso más sencillo dado que no existe una compleja relación entre los objetos que se quieren guaradar en la base de datos en este caso solo uno. De esta forma poder obtener un release más rápido. 
+La elección de firebase bakend fue sustentada en el nivel de complejidad baja de la app y el objetivo de este proyecto y las especificaciones. Firebase ayuda a hacer este proceso más sencillo dado que no existe una compleja relación entre los objetos que se quieren guardar en la base de datos en este caso solo uno. De esta forma poder obtener un release más rápido. 
 
 
 Si desea puede ver la aplicación publicada en uso en la siguiente dirección: [galeria dream solutions](https://dreamsolutionsgallery.maxblu.vercel.app/). El bakend de firebase está restringido con Cuba por lo que es necesario usar vpn sino dará network error.
